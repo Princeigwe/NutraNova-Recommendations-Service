@@ -1,5 +1,5 @@
 from ariadne import QueryType, load_schema_from_path, make_executable_schema, MutationType, SubscriptionType
-
+from recommend_engine import resolvers
 
 type_defs = load_schema_from_path('schemas')
 

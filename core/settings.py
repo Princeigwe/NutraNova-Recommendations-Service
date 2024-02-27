@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+from neomodel import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,11 +45,20 @@ INSTALLED_APPS = [
 
 
     # local apps
+    'recommend_engine.apps.RecommendEngineConfig',
 
 
     # 3rd party apps
     "ariadne_django",
+    "django_neomodel",
 ]
+
+NEO_4J_AURA_DB_USERNAME = os.environ.get('NEO_4J_AURA_DB_USERNAME') # neo4j
+NEO_4J_AURA_DB_PASSWORD = os.environ.get('NEO_4J_AURA_DB_PASSWORD')
+NEO_4J_AURA_DB_CONNECTION_URI = os.environ.get('NEO_4J_AURA_DB_CONNECTION_URI')
+NEO_4J_AURA_DB_HOST = os.environ.get('NEO_4J_AURA_DB_HOST')
+
+config.DATABASE_URL = f'neo4j+s://neo4j:{NEO_4J_AURA_DB_PASSWORD}@{NEO_4J_AURA_DB_HOST}'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,11 +95,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
+
+
+# NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:foobarbaz@localhost:7687')
 
 
 # Password validation

@@ -1,0 +1,50 @@
+type Chef{
+  username: String
+  first_name: String
+  last_name: String
+}
+
+type Ingredient{
+  name: String
+  quantity: Int
+  unit: String
+}
+
+type NutritionalValue{
+  calories: String  # using String type because of the units attached to the numbers
+  fat: String
+  cholesterol: String
+  sodium: String
+  carbohydrates: String
+  fiber: String
+  sugar: String
+  protein: String
+  potassium: String
+}
+
+type Recipe{
+  id: Int
+  title: String
+  description: String
+  ingredients: [Ingredient]
+  instructions: [String]
+  preparationTime: String
+  cookingTime: String
+  servings: Int
+  images: [String]
+  tags: [String]
+  nutritionalValue: NutritionalValue
+  chef: Chef
+  status: String
+  created: String
+  published: String
+}
+
+
+type Mutation{
+  greet: String
+}
+
+type Query{
+  hello: String
+}
