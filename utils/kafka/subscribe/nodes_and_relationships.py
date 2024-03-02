@@ -95,29 +95,7 @@ def create_nodes(messages):
     recipe = Recipe(title=message_recipe_title, description=message_recipe_description, ingredients=message_recipe_ingredients, instructions=message_recipe_instructions, preparation_time=message_recipe_preparation_time, cooking_time=message_recipe_cooking_time, servings=message_recipe_servings, nutritional_value=message_recipe_nutritional_value).save()
 
     chef.published.connect(recipe)
-  ##################################
-    # query = """
-    #           merge (chef :Chef{ username: $message_chef_username, first_name: $message_chef_first_name, last_name: $message_chef_last_name}),
-    #                 (recipe :Recipe{ title: $message_recipe_title, description: $message_recipe_description, ingredients: $message_recipe_ingredients, instructions: $message_recipe_instructions, preparation_time: $message_recipe_preparation_time, cooking_time: $message_recipe_cooking_time, servings: $message_recipe_servings, nutritional_value: $message_recipe_nutritional_value })
-    #           create (chef)-[:PUBLISHED]->(recipe);
-    #         """
-    # chef_and_recipe, meta = db.cypher_query(
-    #   query=query,
-    #   params={
-    #     "message_chef_username"             : message_chef_username,
-    #     "message_chef_first_name"           : message_chef_first_name,
-    #     "message_chef_last_name"            : message_chef_last_name,
-    #     "message_recipe_title"              : message_recipe_title,
-    #     "message_recipe_description"        : message_recipe_description,
-    #     "message_recipe_ingredients"        : message_recipe_ingredients,
-    #     "message_recipe_instructions"       : message_recipe_instructions,
-    #     "message_recipe_preparation_time"   : message_recipe_preparation_time,
-    #     "message_recipe_cooking_time"       : message_recipe_cooking_time,
-    #     "message_recipe_servings"           : message_recipe_servings,
-    #     "message_recipe_nutritional_value"  : message_recipe_nutritional_value
-    #   }
-    # )
-    ############################
+
     message_tags = message.value['tags']
     for tag in message_tags:
       try:
