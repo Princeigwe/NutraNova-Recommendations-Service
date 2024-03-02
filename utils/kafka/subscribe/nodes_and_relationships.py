@@ -57,60 +57,74 @@ def consume_kafka_neo_graph_messages():
   consumer.subscribe(topics)
   while True:
     # fetch and return records in batches by topic-partition by polling
-    messages = consumer.poll(timeout_ms=100, max_records=100)
+    all_records = consumer.poll(timeout_ms=100, max_records=100)
     
-    for topic_partition, message in messages.items():
+    # for each topic, retrieve all messages in the record
+    # call the functions for their respective messages
+    for topic_partition, messages in all_records.items():
       if topic_partition.topic == UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC:
-        create_nodes(message)
+        create_nodes(messages)
 
 
 
 # function for CREATE_RECIPE topic
-def create_nodes(message):
+def create_nodes(messages):
   # topic message for creating nodes would have the value:
   # { 
   #   "recipe": <Recipe neomodel> 
   #   "chef": <Chef neomodel>
   #   "tags": [<Tag neomodel>]
   # }
-  message_chef_username             = message.value['chef_username']
-  message_chef_first_name           = message.value['chef_first_name']
-  message_chef_last_name            = message.value['chef_last_name']
-  message_recipe_title              = message.value['recipe_title']
-  message_recipe_description        = message.value['recipe_description']
-  message_recipe_ingredients        = message.value['recipe_ingredients']
-  message_recipe_instructions       = message.value['recipe_instructions']
-  message_recipe_preparation_time   = message.value['recipe_preparation_time']
-  message_recipe_cooking_time       = message.value['recipe_cooking_time']
-  message_recipe_servings           = message.value['recipe_servings']
-  message_recipe_nutritional_value  = message.value['recipe_nutritional_value']
 
-  query = """
-            merge (:Chef{ username: $message_chef_username, first_name: $message_chef_first_name, last_name: $message_chef_last_name}),
-                  (:Recipe{ title: $message_recipe_title, description: $message_recipe_description, ingredients: $message_recipe_ingredients, instructions: $message_recipe_instructions, preparation_time: $message_recipe_preparation_time, cooking_time: $message_recipe_cooking_time, servings: $message_recipe_servings, nutritional_value: $message_recipe_nutritional_value });
-          """
-  chef_and_recipe, meta = db.cypher_query(
-    query=query,
-    params={
-      "message_chef_username"             : message_chef_username,
-      "message_chef_first_name"           : message_chef_first_name,
-      "message_chef_last_name"            : message_chef_last_name,
-      "message_recipe_title"              : message_recipe_title,
-      "message_recipe_description"        : message_recipe_description,
-      "message_recipe_ingredients"        : message_recipe_ingredients,
-      "message_recipe_instructions"       : message_recipe_instructions,
-      "message_recipe_preparation_time"   : message_recipe_preparation_time,
-      "message_recipe_cooking_time"       : message_recipe_cooking_time,
-      "message_recipe_servings"           : message_recipe_servings,
-      "message_recipe_nutritional_value"  : message_recipe_nutritional_value
-    }
-  )
-  message_tags = message.value['tags']
-  for tag in message_tags:
-    try:
-      Tag.nodes.get(name=tag)
-    except DoesNotExist:
-      Tag(name=tag).save()
+
+  for message in messages:
+    # print(message)
+    message_chef_username             = message.value['chef_username']
+    message_chef_first_name           = message.value['chef_first_name']
+    message_chef_last_name            = message.value['chef_last_name']
+    message_recipe_title              = message.value['recipe_title']
+    message_recipe_description        = message.value['recipe_description']
+    message_recipe_ingredients        = message.value['recipe_ingredients']
+    message_recipe_instructions       = message.value['recipe_instructions']
+    message_recipe_preparation_time   = message.value['recipe_preparation_time']
+    message_recipe_cooking_time       = message.value['recipe_cooking_time']
+    message_recipe_servings           = message.value['recipe_servings']
+    message_recipe_nutritional_value  = message.value['recipe_nutritional_value']
+
+    chef = Chef(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name).save()
+    recipe = Recipe(title=message_recipe_title, description=message_recipe_description, ingredients=message_recipe_ingredients, instructions=message_recipe_instructions, preparation_time=message_recipe_preparation_time, cooking_time=message_recipe_cooking_time, servings=message_recipe_servings, nutritional_value=message_recipe_nutritional_value).save()
+
+    chef.published.connect(recipe)
+  ##################################
+    # query = """
+    #           merge (chef :Chef{ username: $message_chef_username, first_name: $message_chef_first_name, last_name: $message_chef_last_name}),
+    #                 (recipe :Recipe{ title: $message_recipe_title, description: $message_recipe_description, ingredients: $message_recipe_ingredients, instructions: $message_recipe_instructions, preparation_time: $message_recipe_preparation_time, cooking_time: $message_recipe_cooking_time, servings: $message_recipe_servings, nutritional_value: $message_recipe_nutritional_value })
+    #           create (chef)-[:PUBLISHED]->(recipe);
+    #         """
+    # chef_and_recipe, meta = db.cypher_query(
+    #   query=query,
+    #   params={
+    #     "message_chef_username"             : message_chef_username,
+    #     "message_chef_first_name"           : message_chef_first_name,
+    #     "message_chef_last_name"            : message_chef_last_name,
+    #     "message_recipe_title"              : message_recipe_title,
+    #     "message_recipe_description"        : message_recipe_description,
+    #     "message_recipe_ingredients"        : message_recipe_ingredients,
+    #     "message_recipe_instructions"       : message_recipe_instructions,
+    #     "message_recipe_preparation_time"   : message_recipe_preparation_time,
+    #     "message_recipe_cooking_time"       : message_recipe_cooking_time,
+    #     "message_recipe_servings"           : message_recipe_servings,
+    #     "message_recipe_nutritional_value"  : message_recipe_nutritional_value
+    #   }
+    # )
+    ############################
+    message_tags = message.value['tags']
+    for tag in message_tags:
+      try:
+        tag = Tag.nodes.get(name=tag)
+      except DoesNotExist:
+        tag = Tag(name=tag).save()
+        recipe.is_tagged.connect(tag)
 
 
 
