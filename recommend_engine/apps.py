@@ -1,6 +1,15 @@
 from django.apps import AppConfig
+import os
+from django.core.management import call_command
 
 
 class RecommendEngineConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'recommend_engine'
+    function_executed = False
+
+    def ready(self) -> None:
+        if os.environ.get('RUN_MAIN'):
+            print("hello server")
+            call_command('kafka_consumer')
+            self.function_executed = True
