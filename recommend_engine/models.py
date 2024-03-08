@@ -22,6 +22,7 @@ class Recipe(neomodel.StructuredNode):
   cooking_time = neomodel.StringProperty()
   servings = neomodel.IntegerProperty()
   nutritional_value = neomodel.JSONProperty()
+  published_date = neomodel.StringProperty()
 
   is_tagged = neomodel.RelationshipTo('Tag', 'IS_TAGGED')
 

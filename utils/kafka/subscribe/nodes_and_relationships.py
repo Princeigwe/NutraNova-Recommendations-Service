@@ -75,7 +75,7 @@ def create_nodes(messages):
   #   "chef": <Chef neomodel>
   #   "tags": [<Tag neomodel>]
   # }
-  print("new message received")
+  print("new message received for creating new published recipes")
   for message in messages:
     # print(message)
     message_chef_username             = message.value['chef_username']
@@ -89,19 +89,27 @@ def create_nodes(messages):
     message_recipe_cooking_time       = message.value['recipe_cooking_time']
     message_recipe_servings           = message.value['recipe_servings']
     message_recipe_nutritional_value  = message.value['recipe_nutritional_value']
+    message_published_date            = message.value['recipe_published']
 
     try:
       chef = Chef.nodes.get(username=message_chef_username)
     except DoesNotExist:
       chef = Chef(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name).save()
     
-
-    recipe = Recipe(title=message_recipe_title, description=message_recipe_description, ingredients=message_recipe_ingredients, instructions=message_recipe_instructions, preparation_time=message_recipe_preparation_time, cooking_time=message_recipe_cooking_time, servings=message_recipe_servings, nutritional_value=message_recipe_nutritional_value).save()
-
+    recipe = Recipe(
+      title             = message_recipe_title, 
+      description       = message_recipe_description, 
+      ingredients       = message_recipe_ingredients, 
+      instructions      = message_recipe_instructions, 
+      preparation_time  = message_recipe_preparation_time, 
+      cooking_time      = message_recipe_cooking_time, 
+      servings          = message_recipe_servings, 
+      nutritional_value = message_recipe_nutritional_value,
+      published_date    = message_published_date
+      ).save()
     chef.published.connect(recipe)
 
     print("processing and creating nodes relationship")
-
 
     message_tags = message.value['tags']
     for tag in message_tags:
@@ -112,10 +120,13 @@ def create_nodes(messages):
       
       recipe.is_tagged.connect(tag)
 
-  
   print("process complete")
 
 
+def chef_like_recipe(messages):
+  # this function is responsible for creating -[:LIKE]-> relationship between the chef(user) and the recipe they liked
+
+  pass
 
   # try:
   #   for message in consumer:

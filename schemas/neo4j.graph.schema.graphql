@@ -60,6 +60,7 @@ type Recipe{
   cookingTime: String
   servings: Int
   nutritionalValue: NutritionalValue
+  publishedDate: String
 }
 
 
