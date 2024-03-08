@@ -64,6 +64,8 @@ def consume_kafka_neo_graph_messages():
     for topic_partition, messages in all_records.items():
       if topic_partition.topic == UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC:
         create_nodes(messages)
+      elif topic_partition.topic == UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC:
+        chef_like_recipe(messages)
 
 
 
@@ -125,8 +127,22 @@ def create_nodes(messages):
 
 def chef_like_recipe(messages):
   # this function is responsible for creating -[:LIKE]-> relationship between the chef(user) and the recipe they liked
+  print("new message received for creating -[:LIKE]-> between chef and recipe node")
 
-  pass
+  for message in messages:
+    message_chef_username = message.value['chef_username']
+    message_recipe_title = message.value['recipe_title']
+    message_recipe_published = message.value['recipe_published']
+
+    chef = Chef.nodes.get(username=message_chef_username)
+    recipe = Recipe.nodes.get(title=message_recipe_title, published_date=message_recipe_published)
+
+    print("processing -[:LIKE]-> relationship")
+
+    chef.liked.connect(recipe)
+  
+  print("process complete")
+
 
   # try:
   #   for message in consumer:
