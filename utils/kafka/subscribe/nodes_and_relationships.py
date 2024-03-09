@@ -22,7 +22,6 @@ from recommend_engine.models import Recipe, Chef, Tag
 # UPDATE_CHEF_USERNAME_TOPIC: this topic is responsible for changing the username attribute of a chef node
 
 # CHEF_LIKE_REL_RECIPE: this topic is responsible for creating the -[LIKED]-> relationship between a chef and a recipe
-# CHEF_UNLIKE_REL_RECIPE: this topic is responsible for creating the -[UN_LIKED]-> relationship between a chef and a recipe
 
 def consume_kafka_neo_graph_messages():
   consumer_config = {
