@@ -66,6 +66,8 @@ def consume_kafka_neo_graph_messages():
         create_nodes(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC:
         chef_like_recipe(messages)
+      elif topic_partition.topic == UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC:
+        delete_chef_like_rel(messages)
 
 
 
@@ -143,6 +145,20 @@ def chef_like_recipe(messages):
   
   print("process complete")
 
+
+def delete_chef_like_rel(messages):
+  print("new message received for deleting -[:LIKE]-> between chef and recipe node")
+
+  for message in messages:
+    message_chef_username = message.value['chef_username']
+    message_recipe_title = message.value['recipe_title']
+    message_recipe_published = message.value['recipe_published']
+
+    query = " MATCH (:Chef{username: $message_chef_username})-[l: LIKED]->(:Recipe{title: $message_recipe_title, published_date: $message_recipe_published}) DELETE l; "
+    
+    result, meta = db.cypher_query(query=query, params={ "message_chef_username": message_chef_username, "message_recipe_title": message_recipe_title, "message_recipe_published": message_recipe_published })
+    print("LIKE relationship deleted")
+    return result
 
   # try:
   #   for message in consumer:
