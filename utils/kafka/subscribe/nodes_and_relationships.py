@@ -131,12 +131,21 @@ def chef_like_recipe(messages):
   print("new message received for creating -[:LIKE]-> between chef and recipe node")
 
   for message in messages:
-    message_chef_username = message.value['chef_username']
+    message_chef_username = message.value['liker_username']
+    message_chef_first_name = message.value['liker_first_name']
+    message_chef_last_name  = message.value['liker_last_name']
     message_recipe_title = message.value['recipe_title']
     message_recipe_published = message.value['recipe_published']
 
-    chef = Chef.nodes.get(username=message_chef_username)
+    try:
+      print(f"fetching {message_chef_username} node")
+      chef = Chef.nodes.get(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name)
+    except DoesNotExist:
+      print("node does not exist, creating node")
+      chef = Chef(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name).save()
+
     recipe = Recipe.nodes.get(title=message_recipe_title, published_date=message_recipe_published)
+      
 
     print("processing -[:LIKE]-> relationship")
 
@@ -149,13 +158,16 @@ def delete_chef_like_rel(messages):
   print("new message received for deleting -[:LIKE]-> between chef and recipe node")
 
   for message in messages:
-    message_chef_username = message.value['chef_username']
+    message_chef_username = message.value['liker_username']
+    message_chef_first_name = message.value['liker_first_name']
+    message_chef_last_name  = message.value['liker_last_name']
     message_recipe_title = message.value['recipe_title']
     message_recipe_published = message.value['recipe_published']
 
-    query = " MATCH (:Chef{username: $message_chef_username})-[l: LIKED]->(:Recipe{title: $message_recipe_title, published_date: $message_recipe_published}) DELETE l; "
+    query = " MATCH (:Chef{username: $message_chef_username, first_name: $message_chef_first_name, last_name: $message_chef_last_name})-[l: LIKED]->(:Recipe{title: $message_recipe_title, published_date: $message_recipe_published}) DELETE l "
+
     
-    result, meta = db.cypher_query(query=query, params={ "message_chef_username": message_chef_username, "message_recipe_title": message_recipe_title, "message_recipe_published": message_recipe_published })
+    result, meta = db.cypher_query(query=query, params={ "message_chef_username": message_chef_username, "message_chef_first_name": message_chef_first_name, "message_chef_last_name": message_chef_last_name,"message_recipe_title": message_recipe_title, "message_recipe_published": message_recipe_published })
     print("LIKE relationship deleted")
     return result
 
