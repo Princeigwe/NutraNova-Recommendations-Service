@@ -84,6 +84,8 @@ def create_nodes(messages):
     message_chef_username             = message.value['chef_username']
     message_chef_first_name           = message.value['chef_first_name']
     message_chef_last_name            = message.value['chef_last_name']
+    message_chef_preferences          = message.value['chef_preferences']
+
     message_recipe_title              = message.value['recipe_title']
     message_recipe_description        = message.value['recipe_description']
     message_recipe_ingredients        = message.value['recipe_ingredients']
@@ -97,7 +99,7 @@ def create_nodes(messages):
     try:
       chef = Chef.nodes.get(username=message_chef_username)
     except DoesNotExist:
-      chef = Chef(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name).save()
+      chef = Chef(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name, preferences=message_chef_preferences).save()
     
     recipe = Recipe(
       title             = message_recipe_title, 

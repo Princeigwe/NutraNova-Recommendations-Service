@@ -11,6 +11,7 @@ class Chef(neomodel.StructuredNode):
   username = neomodel.StringProperty(required=True)
   first_name = neomodel.StringProperty()
   last_name = neomodel.StringProperty()
+  preferences = neomodel.JSONProperty()
 
   liked = neomodel.RelationshipTo('Recipe', 'LIKED', model=LikedRel)
   un_liked = neomodel.RelationshipTo('Recipe', 'UN_LIKED')
