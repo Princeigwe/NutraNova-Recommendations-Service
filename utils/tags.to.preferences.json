@@ -227,5 +227,8 @@
   },
   "Pregnancy": {
     "MEDICAL_CONDITIONS_CHOICES": "PREGNANCY"
+  },
+  "Gut-Healing": {
+    "HEALTH_GOALS_CHOICES": ["GUT_HEALTH", "OVERALL_WELLNESS"]
   }
 }
