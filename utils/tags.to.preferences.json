@@ -1,0 +1,231 @@
+{
+  "Weight Loss": {
+    "HEALTH_GOALS_CHOICES": "WEIGHT_LOSS"
+  },
+  "Desserts": {
+    "DIETARY_PREFERENCES_CHOICES": "SWEET"
+  },
+  "Dairy-Free": {
+    "DIETARY_PREFERENCES_CHOICES":"DAIRY_FREE"
+  },
+  "Dinner":  {
+    "CUISINES_CHOICES": [ "ITALIAN", "MEDITERRANEAN", "ASIAN", "MEXICAN", "MIDDLE_EASTERN", "AMERICAN", "FRENCH", "INDIAN", "AFRICAN"] 
+  },
+  "Vegan": {
+    "DIETARY_PREFERENCES_CHOICES": "VEGAN"
+  },
+  "Heart-Healthy": {
+    "HEALTH_GOALS_CHOICES": "HEART_HEALTH"
+  },
+  "Salad": {
+    "TASTE_PREFERENCES_CHOICES": "HERBACEOUS"
+  },
+  "Snack": {
+    "TASTE_PREFERENCES_CHOICES": "SWEET"
+  },
+  "Spicy": {
+    "TASTE_PREFERENCES_CHOICES": "SPICY"
+  },
+  "Better-Sleep": {
+    "HEALTH_GOALS_CHOICES": "BETTER_SLEEP"
+  },
+  "Low-Cholesterol": {
+    "HEALTH_GOALS_CHOICES": "LOW_CHOLESTEROL"
+  },
+  "Lunch": {
+    "CUISINES_CHOICES": [ "ITALIAN", "MEDITERRANEAN", "ASIAN", "MEXICAN", "MIDDLE_EASTERN", "AMERICAN", "FRENCH", "INDIAN", "AFRICAN"] 
+  },
+  "Breakfast": {
+    "CUISINES_CHOICES": [ "ITALIAN", "MEDITERRANEAN", "ASIAN", "MEXICAN", "MIDDLE_EASTERN", "AMERICAN", "FRENCH", "INDIAN", "AFRICAN"] 
+  },
+  "Gluten-Free": {
+    "DIETARY_PREFERENCES_CHOICES": "GLUTEN_FREE"
+  },
+  "Kidney-Friendly": {
+    "MEDICAL_CONDITIONS_CHOICES": "KIDNEY_DISEASE"
+  },
+  "Savoury": {
+    "TASTE_PREFERENCES_CHOICES": "SAVOURY"
+  },
+  "Diabetic-Friendly": {
+    "MEDICAL_CONDITIONS_CHOICES": "DIABETICS"
+  },
+  "Italian": {
+    "CUISINES_CHOICES": "ITALIAN"
+  },
+  "Low-Calorie": {
+    "HEALTH_GOALS_CHOICES": ["WEIGHT_LOSS", "OVERALL_WELLNESS"]
+  },
+  "High-Protein": {
+    "HEALTH_GOALS_CHOICES": "MUSCLE_GAIN"
+  },
+  "Low-Carb": {
+    "DIETARY_PREFERENCES_CHOICES": "LOW_CARB"
+  },
+  "Vegetarian": {
+    "DIETARY_PREFERENCES_CHOICES": "VEGETARIAN"
+  },
+  "Paleo": {
+    "DIETARY_PREFERENCES_CHOICES": "PALEO"
+  },
+  "Sugar-Free": {
+    "TASTE_PREFERENCES_CHOICES": "BITTER"
+  },
+  "High-Fiber": {
+    "HEALTH_GOALS_CHOICES": "OVERALL_WELLNESS"
+  },
+  "Nut-Free": {
+    "ALLERGEN_CHOICES": "TREE_NUTS"
+  },
+  "Clean-Eating": {
+    "HEALTH_GOALS_CHOICES": "OVERALL_WELLNESS"
+  },
+  "Mediterranean": {
+    "CUISINES_CHOICES": "MEDITERRANEAN"
+  },
+  "Asian": {
+    "CUISINES_CHOICES": "ASIAN"
+  },
+  "Mexican": {
+    "CUISINES_CHOICES": "MEXICAN"
+  },
+  "Middle Eastern": {
+    "CUISINES_CHOICES": "MIDDLE_EASTERN"
+  },
+  "American": {
+    "CUISINES_CHOICES": "AMERICAN"
+  },
+  "French": {
+    "CUISINES_CHOICES": "FRENCH"
+  },
+  "Indian": {
+    "CUISINES_CHOICES": "INDIAN"
+  },
+  "African": {
+    "CUISINES_CHOICES": "AFRICAN"
+  },
+  "Low-Fat": {
+    "HEALTH_GOALS_CHOICES": ["OVERALL_WELLNESS", "LOW_FAT"]
+  },
+  "Anti-Inflammatory": {
+    "HEALTH_GOALS_CHOICES": ["OVERALL_WELLNESS", "ANTI_INFLAMMATORY"]
+  },
+  "Balanced": {
+    "HEALTH_GOALS_CHOICES": "OVERALL_WELLNESS"
+  },
+  "Vitamin-Rich": {
+    "TASTE_PREFERENCES_CHOICES": ["CITRUSY", "SOUR"],
+    "HEALTH_GOALS_CHOICES": ["OVERALL_WELLNESS"]
+  },
+  "Post-Workout": {
+    "HEALTH_GOALS_CHOICES": ["MUSCLE_GAIN", "RECOVERY"]
+  },
+  "Prebiotic": {
+    "DIETARY_PREFERENCES_CHOICES": "PREBIOTIC"
+  },
+  "Probiotic": {
+    "DIETARY_PREFERENCES_CHOICES": "PROBIOTIC"
+  },
+  "Low-Glycemic": {
+    "MEDICAL_CONDITIONS_CHOICES": "DIABETICS"
+  },
+  "Satiating": {
+    "HEALTH_GOALS_CHOICES": "OVERALL_WELLNESS"
+  },
+  "Hydrating": {
+    "DIETARY_PREFERENCES_CHOICES": "HYDRATING"
+  },
+  "Metabolism-Boosting": {
+    "HEALTH_GOALS_CHOICES": "WEIGHT_LOSS"
+  },
+  "Bone Health": {
+    "MEDICAL_CONDITIONS_CHOICES": "OSTEOPOROSIS"
+  },
+  "Anti-Cancer": {
+    "HEALTH_GOALS_CHOICES": "OVERALL_WELLNESS"
+  },
+  "Energy-Boosting": {
+    "HEALTH_GOALS_CHOICES": ["OVERALL_WELLNESS", "BETTER_SLEEP"]
+  },
+  "Weight Management": {
+    "HEALTH_GOALS_CHOICES": ["WEIGHT_LOSS", "WEIGHT_MAINTENANCE"]
+  },
+  "Omega-3 Rich": {
+    "HEALTH_GOALS_CHOICES": "HEALTHY_AGING"
+  },
+  "Iron-Rich": {
+    "HEALTH_GOALS_CHOICES": ["OVERALL_WELLNESS", "HEALTHY_AGING"]
+  },
+  "Mind-Boosting": {
+    "HEALTH_GOALS_CHOICES": ["BETTER_SLEEP", "BRAIN_HEALTH"]
+  },
+  "Bitter": {
+    "TASTE_PREFERENCES_CHOICES": "BITTER"
+  },
+  "Sour": {
+    "TASTE_PREFERENCES_CHOICES": "SOUR"
+  },
+  "Creamy": {
+    "TASTE_PREFERENCES_CHOICES": "CREAMY"
+  },
+  "Herbaceous": {
+    "TASTE_PREFERENCES_CHOICES": "HERBACEOUS"
+  },
+  "Garlicky": {
+    "TASTE_PREFERENCES_CHOICES": "GARLICKY"
+  },
+  "Umami": {
+    "TASTE_PREFERENCES_CHOICES": "UMAMI"
+  },
+  "Citrusy": {
+    "TASTE_PREFERENCES_CHOICES": "CITRUSY"
+  },
+  "Mild": {
+    "TASTE_PREFERENCES_CHOICES": "MILD"
+  },
+  "Aromatic": {
+    "TASTE_PREFERENCES_CHOICES": "AROMATIC"
+  },
+  "Pescatarian": {
+    "DIETARY_PREFERENCES_CHOICES": "PESCATARIAN"
+  },
+  "Milk-Free": {
+    "ALLERGEN_CHOICES": "MILK"
+  },
+  "Egg-Free": {
+    "ALLERGEN_CHOICES": "EGG"
+  },
+  "Peanut-Free": {
+    "ALLERGEN_CHOICES": "PEANUT"
+  },
+  "Soy-Free": {
+    "ALLERGEN_CHOICES": "SOY"
+  },
+  "Wheat-Free": {
+    "ALLERGEN_CHOICES": "WHEAT"
+  },
+  "Tree Nuts-Free": {
+    "ALLERGEN_CHOICES": "TREE_NUTS"
+  },
+  "Shellfish-Free": {
+    "ALLERGEN_CHOICES": "SHELLFISH"
+  },
+  "Sesame-Free": {
+    "ALLERGEN_CHOICES": "SESAME"
+  },
+  "Garlic-Free": {
+    "ALLERGEN_CHOICES": "GARLIC"
+  },
+  "Hypertension": {
+    "MEDICAL_CONDITIONS_CHOICES": "HYPERTENSION"
+  },
+  "Lactose Intolerance": {
+    "MEDICAL_CONDITIONS_CHOICES": "LACTOSE_INTOLERANCE"
+  },
+  "Fructose Intolerance": {
+    "MEDICAL_CONDITIONS_CHOICES": "FRUCTOSE_INTOLERANCE"
+  },
+  "Pregnancy": {
+    "MEDICAL_CONDITIONS_CHOICES": "PREGNANCY"
+  }
+}
