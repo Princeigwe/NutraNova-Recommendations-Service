@@ -1,14 +1,18 @@
 from django.db import models
+import datetime
+import pytz
 
 # Create your models here.
 import neomodel
 
+class LikedRel(neomodel.StructuredRel):
+  date = neomodel.DateTimeProperty(default=lambda: datetime.datetime.now(pytz.utc), index=True)
 class Chef(neomodel.StructuredNode):
   username = neomodel.StringProperty(required=True)
   first_name = neomodel.StringProperty()
   last_name = neomodel.StringProperty()
 
-  liked = neomodel.RelationshipTo('Recipe', 'LIKED')
+  liked = neomodel.RelationshipTo('Recipe', 'LIKED', model=LikedRel)
   un_liked = neomodel.RelationshipTo('Recipe', 'UN_LIKED')
   published = neomodel.RelationshipTo('Recipe', 'PUBLISHED')
 

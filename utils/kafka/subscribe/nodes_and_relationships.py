@@ -150,6 +150,10 @@ def chef_like_recipe(messages):
     print("processing -[:LIKE]-> relationship")
 
     chef.liked.connect(recipe)
+    #* on the neo4j workspace the date attribute of the LIKE relationship is not giving data properly.
+    #* to see the date, try:
+    #* rel = chef.liked.connect(recipe)
+    #* print(rel.date)
   
   print("process complete")
 
