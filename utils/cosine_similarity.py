@@ -12,54 +12,78 @@ tag_to_preference_mapping = json.loads(tag_to_preference_file_content)
 
 # def tag_to_preference_unit(chef_preference, tag, tag_data_choice):
 def tag_to_preference_unit(chef_preference, tag_data_choice):
-  print("lljl")
+  print("  ")
+  print("starting new matching process")
   print(tag_data_choice)
 
+  # if "," in chef_preference:
+  #   print("the current user preference: ",chef_preference)
+  #   chef_preference_list = chef_preference.split(",")
+
   
-  # if chef_preference == tag_data_choice:
-  #   unit = 1
-  # else:
-  #   unit = 0
-  # return unit
   for value in tag_data_choice.values():
     tag_data_choice_value = value
+
   if (isinstance(chef_preference, str) and isinstance(tag_data_choice_value, str)):
+    print("both tag and user preference are of string type")
     if chef_preference == tag_data_choice_value:
       unit = 1
     else:
       unit = 0
     return unit
     
-  # elif ( isinstance(chef_preference, str) and isinstance(tag_data_choice_value, list)):
-  #   if chef_preference in tag_data_choice_value:
-  #     unit = 1
-  #   else:
-  #     unit = 0
-  #   return unit
-    
-  elif "," in chef_preference:
-    print("the preference: ...",chef_preference)
-    chef_preference_list = chef_preference.split(",")
-    print("set: preparation")
-    print(chef_preference_list)
-    print(tag_data_choice_value)
-    if ( isinstance(chef_preference_list, list) and isinstance(tag_data_choice_value, list)):
-      chef_preference_set = set(chef_preference_list)
-      tag_data_choice_set = set(tag_data_choice_value)
-      print(chef_preference_set)
-      print(tag_data_choice_set)
-      if (chef_preference_set & tag_data_choice_set):
-        print ("common element: ",chef_preference_set & tag_data_choice_set)
-      else:
-        print("no common elements in sets")
-      unit = len( chef_preference_set.intersection(tag_data_choice_set) )
-      print("intersection between chef preference and tag data choice value: ", chef_preference_set.intersection(tag_data_choice_set))
-      return unit
-  # elif ( isinstance(chef_preference, list) and isinstance(tag_data_choice_value, list)):
-  #     chef_preference_set = set(chef_preference)
+  # if (isinstance(tag_data_choice_value, str) and isinstance(chef_preference_list , list)):
+  if (isinstance(tag_data_choice_value, str) and isinstance(chef_preference , list)):
+    print("a tag to mutiple user preference")
+    # if tag_data_choice_value in chef_preference_list:
+    if tag_data_choice_value in chef_preference:
+      unit = 1
+    else:
+      unit = 0
+    return unit
+  
+
+  
+  print("set: preparation")
+  # print(chef_preference_list)
+  print(chef_preference)
+  print(tag_data_choice_value)
+  # if ( isinstance(chef_preference_list, list) and isinstance(tag_data_choice_value, list)):
+  if ( isinstance(chef_preference, list) and isinstance(tag_data_choice_value, list)):
+    # chef_preference_set = set(chef_preference_list)
+    chef_preference_set = set(chef_preference)
+    tag_data_choice_set = set(tag_data_choice_value)
+    print(chef_preference_set)
+    print(tag_data_choice_set)
+    if (chef_preference_set & tag_data_choice_set):
+      print ("common element: ",chef_preference_set & tag_data_choice_set)
+    else:
+      print("no common elements in sets")
+    unit = len( chef_preference_set.intersection(tag_data_choice_set) )
+    print("intersection between chef preference and tag data choice value: ", chef_preference_set.intersection(tag_data_choice_set))
+    return unit
+
+
+  ##* uncomment this if the next trial doesn't work out
+  # elif "," in chef_preference:
+  #   print("the preference: ...",chef_preference)
+  #   chef_preference_list = chef_preference.split(",")
+  #   print("set: preparation")
+  #   print(chef_preference_list)
+  #   print(tag_data_choice_value)
+  #   if ( isinstance(chef_preference_list, list) and isinstance(tag_data_choice_value, list)):
+  #     chef_preference_set = set(chef_preference_list)
   #     tag_data_choice_set = set(tag_data_choice_value)
+  #     print(chef_preference_set)
+  #     print(tag_data_choice_set)
+  #     if (chef_preference_set & tag_data_choice_set):
+  #       print ("common element: ",chef_preference_set & tag_data_choice_set)
+  #     else:
+  #       print("no common elements in sets")
   #     unit = len( chef_preference_set.intersection(tag_data_choice_set) )
+  #     print("intersection between chef preference and tag data choice value: ", chef_preference_set.intersection(tag_data_choice_set))
   #     return unit
+
 
 
 
@@ -146,10 +170,17 @@ def chef_preference_to_tag_vector_embedding(username):
         tag_data_choice == "CUISINES_CHOICES"
         chef_cuisines = chef_preferences["cuisines"] # chef_preferences["cuisines"] is a list data type
         #* calculate average presence rate of the node chef_cuisines in the tag_preference_data value
-        # tag_to_preference_unit(chef_cuisines, tag, tag_data_choice)
-        # unit = tag_to_preference_unit(chef_cuisines, tag, tag_data_choice)
-        unit = tag_to_preference_unit(chef_cuisines, tag_data_choice)
-        print("unit is: ",unit)
+
+        if "," in chef_cuisines:
+          chef_cuisines_list = chef_cuisines.split(",")
+          unit = tag_to_preference_unit(chef_cuisines_list, tag_data_choice)
+          print("unit is: ",unit)
+        else:
+          unit = tag_to_preference_unit(chef_cuisines, tag_data_choice)
+          print("unit is: ",unit)
+
+        # unit = tag_to_preference_unit(chef_cuisines, tag_data_choice)
+        # print("unit is: ",unit)
 
         #* append the average preference rate to the recipe_tags_rates list
         recipe_tags_rates.append(unit)
