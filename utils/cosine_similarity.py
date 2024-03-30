@@ -16,6 +16,9 @@ def tag_to_preference_unit(chef_preference, tag_data_choice):
   print("starting new matching process")
   print(tag_data_choice)
 
+  print("the current user preference: ",chef_preference)
+
+
   # if "," in chef_preference:
   #   print("the current user preference: ",chef_preference)
   #   chef_preference_list = chef_preference.split(",")
@@ -44,12 +47,11 @@ def tag_to_preference_unit(chef_preference, tag_data_choice):
   
 
   
-  print("set: preparation")
-  # print(chef_preference_list)
-  print(chef_preference)
-  print(tag_data_choice_value)
   # if ( isinstance(chef_preference_list, list) and isinstance(tag_data_choice_value, list)):
   if ( isinstance(chef_preference, list) and isinstance(tag_data_choice_value, list)):
+    print("set preparation for both lists")
+    print(chef_preference)
+    print(tag_data_choice_value)
     # chef_preference_set = set(chef_preference_list)
     chef_preference_set = set(chef_preference)
     tag_data_choice_set = set(tag_data_choice_value)
@@ -143,10 +145,11 @@ def chef_preference_to_tag_vector_embedding(username):
         tag_data_choice == "ALLERGEN_CHOICES"
         chef_allergens = chef_preferences["allergens"] # chef_preferences["allergens"] is a list data type
         #* calculate average presence rate of the node chef_allergens in the tag_preference_data value
-        # tag_to_preference_unit(chef_allergens, tag, tag_data_choice)
-        # unit = tag_to_preference_unit(chef_allergens, tag, tag_data_choice)
-        unit = tag_to_preference_unit(chef_allergens, tag_data_choice)
+        chef_allergens_list = chef_allergens.split(",")
+        unit = tag_to_preference_unit(chef_allergens_list, tag_data_choice)
         print("unit is: ",unit)
+        # unit = tag_to_preference_unit(chef_allergens, tag_data_choice)
+        # print("unit is: ",unit)
 
         #* append the average preference rate to the recipe_tags_rates list
         recipe_tags_rates.append(unit)
@@ -156,8 +159,6 @@ def chef_preference_to_tag_vector_embedding(username):
       elif "ACTIVITY_LEVELS" in tag_data_choice:
         chef_activity_level = chef_preferences["activity_level"]
         #* calculate average presence rate of the node chef_activity_level in the tag_preference_data value
-        # tag_to_preference_unit(chef_activity_level, tag, tag_data_choice)
-        # unit = tag_to_preference_unit(chef_activity_level, tag, tag_data_choice)
         unit = tag_to_preference_unit(chef_activity_level, tag_data_choice)
         print("unit is: ",unit)
 
@@ -170,17 +171,9 @@ def chef_preference_to_tag_vector_embedding(username):
         tag_data_choice == "CUISINES_CHOICES"
         chef_cuisines = chef_preferences["cuisines"] # chef_preferences["cuisines"] is a list data type
         #* calculate average presence rate of the node chef_cuisines in the tag_preference_data value
-
-        if "," in chef_cuisines:
-          chef_cuisines_list = chef_cuisines.split(",")
-          unit = tag_to_preference_unit(chef_cuisines_list, tag_data_choice)
-          print("unit is: ",unit)
-        else:
-          unit = tag_to_preference_unit(chef_cuisines, tag_data_choice)
-          print("unit is: ",unit)
-
-        # unit = tag_to_preference_unit(chef_cuisines, tag_data_choice)
-        # print("unit is: ",unit)
+        chef_cuisines_list = chef_cuisines.split(",")
+        unit = tag_to_preference_unit(chef_cuisines_list, tag_data_choice)
+        print("unit is: ",unit)
 
         #* append the average preference rate to the recipe_tags_rates list
         recipe_tags_rates.append(unit)
@@ -191,10 +184,11 @@ def chef_preference_to_tag_vector_embedding(username):
         tag_data_choice == "MEDICAL_CONDITIONS_CHOICES"
         chef_medical_conditions = chef_preferences["medical_conditions"] # chef_preferences["medical_conditions"] is a list data type
         #* calculate average presence rate of the node chef_medical_conditions in the tag_preference_data value
-        # tag_to_preference_unit(chef_medical_conditions, tag, tag_data_choice)
-        # unit = tag_to_preference_unit(chef_medical_conditions, tag, tag_data_choice)
-        unit = tag_to_preference_unit(chef_medical_conditions, tag_data_choice)
+        chef_medical_conditions_list = chef_medical_conditions.split(",")
+        unit = tag_to_preference_unit(chef_medical_conditions_list, tag_data_choice)
         print("unit is: ",unit)
+        # unit = tag_to_preference_unit(chef_medical_conditions, tag_data_choice)
+        # print("unit is: ",unit)
 
         #* append the average preference rate to the recipe_tags_rates list
         recipe_tags_rates.append(unit)
@@ -205,10 +199,11 @@ def chef_preference_to_tag_vector_embedding(username):
         tag_data_choice == "TASTE_PREFERENCES_CHOICES"
         chef_taste_preferences = chef_preferences["taste_preferences"] # chef_preferences["taste_preferences"] is a list data type
         #* calculate average presence rate of the node chef_taste_preferences in the tag_preference_data value
-        # tag_to_preference_unit(chef_taste_preferences, tag, tag_data_choice)
-        # unit = tag_to_preference_unit(chef_taste_preferences, tag, tag_data_choice)
-        unit = tag_to_preference_unit(chef_taste_preferences, tag_data_choice)
+        chef_taste_preferences_list = chef_taste_preferences.split(",")
+        unit = tag_to_preference_unit(chef_taste_preferences_list, tag_data_choice)
         print("unit is: ",unit)
+        # unit = tag_to_preference_unit(chef_taste_preferences, tag_data_choice)
+        # print("unit is: ",unit)
 
         #* append the average preference rate to the recipe_tags_rates list
         recipe_tags_rates.append(unit)
