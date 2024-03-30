@@ -84,4 +84,5 @@ type Mutation{
 
 type Query{
   hello: String
+  userPreferenceVector(username:String): String
 }

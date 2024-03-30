@@ -4,6 +4,7 @@ from recommend_engine import resolvers
 type_defs = load_schema_from_path('schemas')
 
 query = QueryType()
+query.set_field("userPreferenceVector", resolvers.resolve_user_preference_vector)
 
 
 mutation = MutationType()
