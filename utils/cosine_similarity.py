@@ -31,7 +31,7 @@ def tag_to_preference_unit(chef_preference, tag_data_choice):
     return unit
     
   if (isinstance(tag_data_choice_value, str) and isinstance(chef_preference , list)):
-    print("a tag to mutiple user preference")
+    print("a tag to multiple user preference")
     if tag_data_choice_value in chef_preference:
       unit = 1
     else:
