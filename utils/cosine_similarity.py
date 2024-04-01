@@ -3,6 +3,7 @@ from recommend_engine.models import Tag, Chef
 import numpy as np
 
 # tag_to_preference_mapping = open("tags.to.preferences.json", "r")
+## todo: research the correct format for finding the path of the tags.to.preferences.json file
 tag_to_preference_file = open("/home/princeigwe/NutraNova-Services/Recommendations-Service/utils/tags.to.preferences.json")
 tag_to_preference_file_content = tag_to_preference_file.read()
 
@@ -57,16 +58,20 @@ def tag_to_preference_unit(chef_preference, tag_data_choice):
     return unit
 
 
-def chef_preference_to_tag_vector_embedding(username):
-  ##* create a sorted list of recipe tags
+def sorted_tags_list():
   recipe_tags = Tag.nodes.all()
   tags_list = []
   for recipe_tag in recipe_tags:
     tags_list.append(recipe_tag.name)
   tags_list.sort()
   print(tags_list)
+  return tags_list
 
-  ##* create a vector embedding of user user preferences to sorted tags
+def chef_preference_to_tag_vector_embedding(username):
+  ##* create a sorted list of recipe tags
+  tags_list = sorted_tags_list()
+  
+  #* create a vector embedding of user user preferences to sorted tags
   chef = Chef.nodes.get(username=username)
   chef_preferences = chef.preferences
   print(chef_preferences)
