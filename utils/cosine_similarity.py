@@ -1,13 +1,14 @@
 import json
-from recommend_engine.models import Tag, Chef
+from recommend_engine.models import Tag, Chef, Recipe
+from neomodel import db
 import numpy as np
+from numpy.linalg import norm
 
 # tag_to_preference_mapping = open("tags.to.preferences.json", "r")
 ## todo: research the correct format for finding the path of the tags.to.preferences.json file
 tag_to_preference_file = open("/home/princeigwe/NutraNova-Services/Recommendations-Service/utils/tags.to.preferences.json")
 tag_to_preference_file_content = tag_to_preference_file.read()
 
-# tag_to_preference_mapping = json.loads(tag_to_preference_file)
 tag_to_preference_mapping = json.loads(tag_to_preference_file_content)
 
 ###* the tag_data_choice are the is/are the choices key in the tags.to.preferences.json
@@ -70,14 +71,14 @@ def sorted_tags_list():
 def chef_preference_to_tag_vector_embedding(username):
   ##* create a sorted list of recipe tags
   tags_list = sorted_tags_list()
-  
+
   #* create a vector embedding of user user preferences to sorted tags
   chef = Chef.nodes.get(username=username)
   chef_preferences = chef.preferences
   print(chef_preferences)
 
   # the list to hold the values for vector embeddings of user preferences to tag_data_choice value
-  recipe_tags_rates = []
+  chef_to_tags_rates = []
 
   ##* calculate the ratings of each tag to user preferences
   for tag in tags_list:
@@ -92,8 +93,8 @@ def chef_preference_to_tag_vector_embedding(username):
         unit = tag_to_preference_unit(chef_dietary_preference, tag_data_choice)
         print("unit is: ", unit)
 
-        recipe_tags_rates.append(unit)
-        print( "user preference feature vector: ", recipe_tags_rates )
+        chef_to_tags_rates.append(unit)
+        print( "user preference feature vector: ", chef_to_tags_rates )
 
       elif "HEALTH_GOALS_CHOICES" in tag_data_choice:
         tag_data_choice == "HEALTH_GOALS_CHOICES"
@@ -102,8 +103,8 @@ def chef_preference_to_tag_vector_embedding(username):
         unit = tag_to_preference_unit(chef_health_goal, tag_data_choice)
         print("unit is: ",unit)
 
-        recipe_tags_rates.append(unit)
-        print( "user preference feature vector: ", recipe_tags_rates )
+        chef_to_tags_rates.append(unit)
+        print( "user preference feature vector: ", chef_to_tags_rates )
       
       elif "ALLERGEN_CHOICES" in tag_data_choice:
         tag_data_choice == "ALLERGEN_CHOICES"
@@ -112,16 +113,16 @@ def chef_preference_to_tag_vector_embedding(username):
         unit = tag_to_preference_unit(chef_allergens_list, tag_data_choice)
         print("unit is: ",unit)
 
-        recipe_tags_rates.append(unit)
-        print( "user preference feature vector: ", recipe_tags_rates )
+        chef_to_tags_rates.append(unit)
+        print( "user preference feature vector: ", chef_to_tags_rates )
       
       elif "ACTIVITY_LEVELS" in tag_data_choice:
         chef_activity_level = chef_preferences["activity_level"]
         unit = tag_to_preference_unit(chef_activity_level, tag_data_choice)
         print("unit is: ",unit)
 
-        recipe_tags_rates.append(unit)
-        print( "user preference feature vector: ", recipe_tags_rates )
+        chef_to_tags_rates.append(unit)
+        print( "user preference feature vector: ", chef_to_tags_rates )
       
       elif "CUISINES_CHOICES" in tag_data_choice:
         tag_data_choice == "CUISINES_CHOICES"
@@ -130,8 +131,8 @@ def chef_preference_to_tag_vector_embedding(username):
         unit = tag_to_preference_unit(chef_cuisines_list, tag_data_choice)
         print("unit is: ",unit)
 
-        recipe_tags_rates.append(unit)
-        print( "user preference feature vector: ", recipe_tags_rates )
+        chef_to_tags_rates.append(unit)
+        print( "user preference feature vector: ", chef_to_tags_rates )
       
       elif "MEDICAL_CONDITIONS_CHOICES" in tag_data_choice:
         tag_data_choice == "MEDICAL_CONDITIONS_CHOICES"
@@ -140,8 +141,8 @@ def chef_preference_to_tag_vector_embedding(username):
         unit = tag_to_preference_unit(chef_medical_conditions_list, tag_data_choice)
         print("unit is: ",unit)
 
-        recipe_tags_rates.append(unit)
-        print( "user preference feature vector: ", recipe_tags_rates )
+        chef_to_tags_rates.append(unit)
+        print( "user preference feature vector: ", chef_to_tags_rates )
       
       elif "TASTE_PREFERENCES_CHOICES" in tag_data_choice:
         tag_data_choice == "TASTE_PREFERENCES_CHOICES"
@@ -150,12 +151,55 @@ def chef_preference_to_tag_vector_embedding(username):
         unit = tag_to_preference_unit(chef_taste_preferences_list, tag_data_choice)
         print("unit is: ",unit)
 
-        recipe_tags_rates.append(unit)
-        print( "user preference feature vector: ", recipe_tags_rates )
+        chef_to_tags_rates.append(unit)
+        print( "user preference feature vector: ", chef_to_tags_rates )
   
-    # print( "overall user preference to tags vector embedding: ", recipe_tags_rates )
-    chef_profile_vector = np.array(recipe_tags_rates)
+    # print( "overall user preference to tags vector embedding: ", chef_to_tags_rates )
+    chef_profile_vector = np.array(chef_to_tags_rates)
     print( "overall user preference to tags vector embedding: ", chef_profile_vector )
+  return chef_profile_vector
 
 
+
+def recipe_to_tag_vector_embedding(recipe):
+  """this function creates a vector embedding for a recipe fetched
+    to the tags
+  """
+  tags_list = sorted_tags_list()
+  tag_nodes = [ Tag.nodes.get(name=tag) for tag in tags_list ]
+  recipe_to_tags_rates = []
+
+  for tag_node in tag_nodes:
+    if recipe.is_tagged.is_connected(tag_node):
+      unit = 1
+    else:
+      unit = 0
+    recipe_to_tags_rates.append(unit)
+  return recipe_to_tags_rates
+
+
+
+# todo: for now, all recipes nodes are fetched, but later on fetch a few based on when they were recently published
+def recipe_to_tag_embeddings():
+  recipes = Recipe.nodes.all()
+  recipe_to_tags_vectors = []
+  for recipe in recipes:
+    recipe_to_tags_rating = recipe_to_tag_vector_embedding(recipe)
+    recipe_to_tags_vector = np.array(recipe_to_tags_rating)
+    print(f"Vector embedding for {recipe.title} on {recipe.published_date}: ", recipe_to_tags_vector)
+    recipe_to_tags_vectors.append(recipe_to_tags_vector)
+  
+  print(" ")
+  print("overall recipe to tags vector embeddings: ", recipe_to_tags_vectors)
+  return recipe_to_tags_vectors
+
+
+def cosine_similarity_for_chef_preference(username):
+  chef_preference_vector = chef_preference_to_tag_vector_embedding(username)
+  recipe_vectors = recipe_to_tag_embeddings()
+  print("chef_vector: ", chef_preference_vector)
+  print("recipe vectors: ", recipe_vectors)
+  for recipe_vector in recipe_vectors:
+    recipe_vector_cosine_similarity = np.dot(recipe_vector, chef_preference_vector) / ( norm(recipe_vector) * norm(chef_preference_vector) )
+    print("cosine similarity: ", recipe_vector_cosine_similarity)
 
