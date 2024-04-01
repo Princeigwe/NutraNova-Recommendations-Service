@@ -1,5 +1,6 @@
 import json
 from recommend_engine.models import Tag, Chef
+import numpy as np
 
 # tag_to_preference_mapping = open("tags.to.preferences.json", "r")
 tag_to_preference_file = open("/home/princeigwe/NutraNova-Services/Recommendations-Service/utils/tags.to.preferences.json")
@@ -147,7 +148,9 @@ def chef_preference_to_tag_vector_embedding(username):
         recipe_tags_rates.append(unit)
         print( "user preference feature vector: ", recipe_tags_rates )
   
-    print( "overall user preference to tags vector embedding: ", recipe_tags_rates )
+    # print( "overall user preference to tags vector embedding: ", recipe_tags_rates )
+    chef_profile_vector = np.array(recipe_tags_rates)
+    print( "overall user preference to tags vector embedding: ", chef_profile_vector )
 
 
 
