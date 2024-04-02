@@ -3,10 +3,11 @@ from recommend_engine.models import Tag, Chef, Recipe
 from neomodel import db
 import numpy as np
 from numpy.linalg import norm
+from django.conf import settings
 
-# tag_to_preference_mapping = open("tags.to.preferences.json", "r")
-## todo: research the correct format for finding the path of the tags.to.preferences.json file
-tag_to_preference_file = open("/home/princeigwe/NutraNova-Services/Recommendations-Service/utils/tags.to.preferences.json")
+
+ttp = f"{settings.BASE_DIR}/utils/tags.to.preferences.json"
+tag_to_preference_file = open(ttp)
 tag_to_preference_file_content = tag_to_preference_file.read()
 
 tag_to_preference_mapping = json.loads(tag_to_preference_file_content)
