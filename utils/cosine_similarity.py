@@ -154,6 +154,9 @@ def chef_preference_to_tag_vector_embedding(username):
 
         chef_to_tags_rates.append(unit)
         print( "user preference feature vector: ", chef_to_tags_rates )
+      
+
+      # todo: work on elif option for "Vitamin-Rich" tag in the tag to preference mapping
   
     # print( "overall user preference to tags vector embedding: ", chef_to_tags_rates )
     chef_profile_vector = np.array(chef_to_tags_rates)
@@ -188,19 +191,43 @@ def recipe_to_tag_embeddings():
     recipe_to_tags_rating = recipe_to_tag_vector_embedding(recipe)
     recipe_to_tags_vector = np.array(recipe_to_tags_rating)
     print(f"Vector embedding for {recipe.title} on {recipe.published_date}: ", recipe_to_tags_vector)
-    recipe_to_tags_vectors.append(recipe_to_tags_vector)
+    # recipe_to_tags_vectors.append(recipe_to_tags_vector)
+    recipe_vector_data = {
+      "recipe_title": recipe.title,
+      "recipe_published_date": recipe.published_date,
+      "recipe_to_tag_vector": recipe_to_tags_vector
+    }
+    # recipe_to_tags_vectors.append(recipe_to_tags_vector)
+    recipe_to_tags_vectors.append(recipe_vector_data)
   
   print(" ")
   print("overall recipe to tags vector embeddings: ", recipe_to_tags_vectors)
   return recipe_to_tags_vectors
 
 
-def cosine_similarity_for_chef_preference(username):
+def cosine_similarities_for_chef_preference(username):
   chef_preference_vector = chef_preference_to_tag_vector_embedding(username)
   recipe_vectors = recipe_to_tag_embeddings()
+  recipe_cosine_similarities = []
   print("chef_vector: ", chef_preference_vector)
   print("recipe vectors: ", recipe_vectors)
+  # for recipe_vector in recipe_vectors:
+  #   recipe_vector_cosine_similarity = np.dot(recipe_vector, chef_preference_vector) / ( norm(recipe_vector) * norm(chef_preference_vector) )
+  #   print("cosine similarity: ", recipe_vector_cosine_similarity)
   for recipe_vector in recipe_vectors:
-    recipe_vector_cosine_similarity = np.dot(recipe_vector, chef_preference_vector) / ( norm(recipe_vector) * norm(chef_preference_vector) )
+    recipe_vector_cosine_similarity = np.dot(recipe_vector["recipe_to_tag_vector"], chef_preference_vector) / ( norm(recipe_vector["recipe_to_tag_vector"]) * norm(chef_preference_vector) )
     print("cosine similarity: ", recipe_vector_cosine_similarity)
+    user_preference_recipe_cosine_similarity = {
+      "recipe_title": recipe_vector["recipe_title"],
+      "recipe_published_date": recipe_vector["recipe_published_date"],
+      "recipe_cos_similarity": recipe_vector_cosine_similarity
+    }
+    recipe_cosine_similarities.append(user_preference_recipe_cosine_similarity)
+    # print(recipe_cosine_similarities)
+
+    # arrange recipes based on highest cosine similarity
+    sorted_recipe_cosine_similarities = sorted(recipe_cosine_similarities, key=lambda x: x['recipe_cos_similarity'], reverse=True)
+    print(sorted_recipe_cosine_similarities)
+  
+  return sorted_recipe_cosine_similarities
 
