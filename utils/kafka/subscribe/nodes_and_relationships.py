@@ -6,6 +6,7 @@ import json
 import neomodel
 from neomodel import db, DoesNotExist
 from recommend_engine.models import Recipe, Chef, Tag
+from utils.recommend_feed import recommend_feed_for_user
 
 
 
@@ -38,8 +39,9 @@ def consume_kafka_neo_graph_messages():
   UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC')
   UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC')
   UPSTASH_KAFKA_CHEF_USERNAME_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_USERNAME_TOPIC')
+  UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC = os.environ.get('UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC')
 
-  topics = [ UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC, UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC, UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC, UPSTASH_KAFKA_CHEF_USERNAME_TOPIC ]
+  topics = [ UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC, UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC, UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC, UPSTASH_KAFKA_CHEF_USERNAME_TOPIC, UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC ]
 
     # adding "api_version" on initialization fixes the issue "kafka.errors.NoBrokersAvailable"
   consumer = KafkaConsumer(
@@ -67,6 +69,8 @@ def consume_kafka_neo_graph_messages():
         chef_like_recipe(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC:
         delete_chef_like_rel(messages)
+      elif topic_partition.topic == UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC:
+        recommend_feed_for_user(messages)
 
 
 
@@ -151,7 +155,10 @@ def chef_like_recipe(messages):
 
     print("processing -[:LIKE]-> relationship")
 
-    chef.liked.connect(recipe)
+    if chef.liked.is_connected(recipe):
+      pass
+    else:
+      chef.liked.connect(recipe)
     #* on the neo4j workspace the date attribute of the LIKE relationship is not giving data properly.
     #* to see the date, try:
     #* rel = chef.liked.connect(recipe)
