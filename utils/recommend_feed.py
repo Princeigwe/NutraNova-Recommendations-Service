@@ -16,8 +16,13 @@ def recommend_feed_for_user(messages):
       item.pop("recipe_cos_similarity")
       recommended_feed.append(item)
     
-    print("Recommended feed: ", recommended_feed)
+    print(f"Recommended feed for {message.value}: ", recommended_feed)
     # return recommended_feed
 
     # publish processed recommended feed to kafka
-    send_user_recommended_feed(recommended_feed)
+    user_recommended_feed = {
+      "username": message.value, # message.value is the username the cos similarity function is working with
+      "recommended_feed": recommended_feed
+    }
+    send_user_recommended_feed(user_recommended_feed)
+    

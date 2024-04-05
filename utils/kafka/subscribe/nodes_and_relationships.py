@@ -140,6 +140,7 @@ def chef_like_recipe(messages):
     message_chef_username = message.value['liker_username']
     message_chef_first_name = message.value['liker_first_name']
     message_chef_last_name  = message.value['liker_last_name']
+    message_chef_preferences = message.value['liker_preferences']
     message_recipe_title = message.value['recipe_title']
     message_recipe_published = message.value['recipe_published']
 
@@ -148,7 +149,7 @@ def chef_like_recipe(messages):
       chef = Chef.nodes.get(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name)
     except DoesNotExist:
       print("node does not exist, creating node")
-      chef = Chef(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name).save()
+      chef = Chef(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name, preferences=message_chef_preferences).save()
 
     recipe = Recipe.nodes.get(title=message_recipe_title, published_date=message_recipe_published)
       
