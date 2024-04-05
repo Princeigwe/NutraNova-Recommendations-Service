@@ -1,4 +1,5 @@
 from .cosine_similarity import cosine_similarities_for_chef_preference
+from utils.kafka.produce.recommended_feed import send_user_recommended_feed
 
 
 def recommend_feed_for_user(messages):
@@ -16,4 +17,7 @@ def recommend_feed_for_user(messages):
       recommended_feed.append(item)
     
     print("Recommended feed: ", recommended_feed)
-    return recommended_feed
+    # return recommended_feed
+
+    # publish processed recommended feed to kafka
+    send_user_recommended_feed(recommended_feed)
