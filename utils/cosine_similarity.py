@@ -232,9 +232,6 @@ def cosine_similarities_for_chef_preference(username):
   recipe_cosine_similarities = []
   print("chef_vector: ", chef_preference_vector)
   print("recipe vectors: ", recipe_vectors)
-  # for recipe_vector in recipe_vectors:
-  #   recipe_vector_cosine_similarity = np.dot(recipe_vector, chef_preference_vector) / ( norm(recipe_vector) * norm(chef_preference_vector) )
-  #   print("cosine similarity: ", recipe_vector_cosine_similarity)
   for recipe_vector in recipe_vectors:
     recipe_vector_cosine_similarity = np.dot(recipe_vector["recipe_to_tag_vector"], chef_preference_vector) / ( norm(recipe_vector["recipe_to_tag_vector"]) * norm(chef_preference_vector) )
     print("cosine similarity: ", recipe_vector_cosine_similarity)
@@ -244,7 +241,6 @@ def cosine_similarities_for_chef_preference(username):
       "recipe_cos_similarity": recipe_vector_cosine_similarity
     }
     recipe_cosine_similarities.append(user_preference_recipe_cosine_similarity)
-    # print(recipe_cosine_similarities)
 
     # arrange recipes based on highest cosine similarity
     sorted_recipe_cosine_similarities = sorted(recipe_cosine_similarities, key=lambda x: x['recipe_cos_similarity'], reverse=True)
