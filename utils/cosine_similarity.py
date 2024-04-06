@@ -12,7 +12,7 @@ tag_to_preference_file_content = tag_to_preference_file.read()
 
 tag_to_preference_mapping = json.loads(tag_to_preference_file_content)
 
-###* the tag_data_choice are the is/are the choices key in the tags.to.preferences.json
+###* the tag_data_choice is/are the choices key in the tags.to.preferences.json
 
 def tag_to_preference_unit(chef_preference, tag_data_choice):
   """ this function calculates the presence rate of the node a chef_preference attribute to the tag_data_choice value """
@@ -156,7 +156,28 @@ def chef_preference_to_tag_vector_embedding(username):
         print( "user preference feature vector: ", chef_to_tags_rates )
       
 
-      # todo: work on elif option for "Vitamin-Rich" tag in the tag to preference mapping
+      ##* operation for "Vitamin-Rich" tag in the tag to preference mapping
+      if tag == "Vitamin-Rich":
+        tag_data_choice = tag_to_preference_mapping[tag]
+
+        if "TASTE_PREFERENCES_CHOICES" in tag_data_choice:
+          chef_taste_preferences = chef_preferences["taste_preferences"] ##* chef_preferences["taste_preferences"] is of multi-values
+          chef_taste_preferences_list = chef_taste_preferences.split(",")
+          unit = tag_to_preference_unit(chef_taste_preferences_list, tag_data_choice)
+          print("unit is: ",unit)
+
+          chef_to_tags_rates.append(unit)
+          print( "user preference feature vector: ", chef_to_tags_rates )
+        
+        elif "HEALTH_GOALS_CHOICES" in tag_data_choice:
+          tag_data_choice == "HEALTH_GOALS_CHOICES"
+          chef_health_goal = chef_preferences["health_goal"]
+          print(chef_health_goal)
+          unit = tag_to_preference_unit(chef_health_goal, tag_data_choice)
+          print("unit is: ",unit)
+
+          chef_to_tags_rates.append(unit)
+          print( "user preference feature vector: ", chef_to_tags_rates )
   
     # print( "overall user preference to tags vector embedding: ", chef_to_tags_rates )
     chef_profile_vector = np.array(chef_to_tags_rates)
