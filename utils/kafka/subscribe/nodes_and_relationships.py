@@ -6,7 +6,7 @@ import json
 import neomodel
 from neomodel import db, DoesNotExist
 from recommend_engine.models import Recipe, Chef, Tag
-from utils.recommend_feed import recommend_feed_for_user
+from utils.recommend_feed import recommend_feed_for_existing_user
 
 
 
@@ -70,7 +70,7 @@ def consume_kafka_neo_graph_messages():
       elif topic_partition.topic == UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC:
         delete_chef_like_rel(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC:
-        recommend_feed_for_user(messages)
+        recommend_feed_for_existing_user(messages)
 
 
 
