@@ -64,6 +64,11 @@ type Recipe{
 }
 
 
+type RecipeCutOut{
+  recipe_title: String
+  recipe_published_date: String
+}
+
 input RecipeInput{
   title: String!
   description: String!
@@ -87,4 +92,7 @@ type Query{
   userPreferenceVector(username:String): String
   recipesTagsVector: String
   cosineSimilarities(username:String): String
+
+  recommendFeedForNewUser: [RecipeCutOut]
+
 }
