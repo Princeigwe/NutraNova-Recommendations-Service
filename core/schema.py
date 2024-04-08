@@ -7,6 +7,7 @@ query = QueryType()
 query.set_field("userPreferenceVector", resolvers.resolve_user_preference_vector)
 query.set_field("recipesTagsVector", resolvers.resolve_recipes_tags_vector)
 query.set_field("cosineSimilarities", resolvers.resolve_cosine_similarities)
+query.set_field("recommendFeedForNewUser", resolvers.resolve_recommend_feed_for_new_user)
 
 mutation = MutationType()
 
