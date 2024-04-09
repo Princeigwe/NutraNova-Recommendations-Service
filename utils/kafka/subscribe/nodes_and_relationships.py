@@ -71,6 +71,8 @@ def consume_kafka_neo_graph_messages():
         delete_chef_like_rel(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC:
         recommend_feed_for_existing_user(messages)
+      elif topic_partition.topic == UPSTASH_KAFKA_CHEF_USERNAME_TOPIC:
+        update_chef_node_username(messages)
 
 
 
@@ -184,6 +186,20 @@ def delete_chef_like_rel(messages):
     result, meta = db.cypher_query(query=query, params={ "message_chef_username": message_chef_username, "message_chef_first_name": message_chef_first_name, "message_chef_last_name": message_chef_last_name,"message_recipe_title": message_recipe_title, "message_recipe_published": message_recipe_published })
     print("LIKE relationship deleted")
     return result
+  
+
+def update_chef_node_username(messages):
+  for message in messages:
+    try:
+      print(f"Received message: {message.value}")
+      chef = Chef.nodes.get(username=message.value['old_username'])
+      chef.username = message.value['new_username']
+      chef.save()
+      print(f"{chef.first_name} username is now {chef.username}")
+    except DoesNotExist:
+      pass
+    except KeyboardInterrupt:
+      pass
 
   # try:
   #   for message in consumer:
