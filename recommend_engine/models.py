@@ -5,7 +5,7 @@ import pytz
 # Create your models here.
 import neomodel
 
-class LikedRel(neomodel.StructuredRel):
+class VotedRel(neomodel.StructuredRel):
   date = neomodel.DateTimeProperty(default=lambda: datetime.datetime.now(pytz.utc), index=True)
 class Chef(neomodel.StructuredNode):
   username = neomodel.StringProperty(required=True)
@@ -13,8 +13,8 @@ class Chef(neomodel.StructuredNode):
   last_name = neomodel.StringProperty()
   preferences = neomodel.JSONProperty()
 
-  liked = neomodel.RelationshipTo('Recipe', 'LIKED', model=LikedRel)
-  un_liked = neomodel.RelationshipTo('Recipe', 'UN_LIKED')
+  up_voted = neomodel.RelationshipTo('Recipe', 'UP_VOTED', model=VotedRel)
+  down_voted = neomodel.RelationshipTo('Recipe', 'DOWN_VOTED', model=VotedRel)
   published = neomodel.RelationshipTo('Recipe', 'PUBLISHED')
 
 

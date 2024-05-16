@@ -24,6 +24,8 @@ from utils.recommend_feed import recommend_feed_for_existing_user
 
 # CHEF_LIKE_REL_RECIPE: this topic is responsible for creating the -[LIKED]-> relationship between a chef and a recipe
 
+#todo: replace -[LIKE]-> relationship with -[UPVOTE]-> and -[DOWNVOTE]-> relationships
+
 def consume_kafka_neo_graph_messages():
   consumer_config = {
     'bootstrap_servers': os.environ.get('UPSTASH_KAFKA_ENDPOINT'),
@@ -36,12 +38,11 @@ def consume_kafka_neo_graph_messages():
 
   # topic = None
   UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC = os.environ.get('UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC')
-  UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC')
-  UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC')
+  UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC')
   UPSTASH_KAFKA_CHEF_USERNAME_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_USERNAME_TOPIC')
   UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC = os.environ.get('UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC')
 
-  topics = [ UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC, UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC, UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC, UPSTASH_KAFKA_CHEF_USERNAME_TOPIC, UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC ]
+  topics = [ UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC, UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC,  UPSTASH_KAFKA_CHEF_USERNAME_TOPIC, UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC ]
 
     # adding "api_version" on initialization fixes the issue "kafka.errors.NoBrokersAvailable"
   consumer = KafkaConsumer(
@@ -65,10 +66,8 @@ def consume_kafka_neo_graph_messages():
     for topic_partition, messages in all_records.items():
       if topic_partition.topic == UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC:
         create_nodes(messages)
-      elif topic_partition.topic == UPSTASH_KAFKA_CHEF_LIKE_REL_RECIPE_TOPIC:
-        chef_like_recipe(messages)
-      elif topic_partition.topic == UPSTASH_KAFKA_CHEF_UNLIKE_REL_RECIPE_TOPIC:
-        delete_chef_like_rel(messages)
+      elif topic_partition.topic == UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC:
+        chef_vote_recipe(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC:
         recommend_feed_for_existing_user(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_CHEF_USERNAME_TOPIC:
@@ -134,15 +133,14 @@ def create_nodes(messages):
   print("process complete")
 
 
-def chef_like_recipe(messages):
-  # this function is responsible for creating -[:LIKE]-> relationship between the chef(user) and the recipe they liked
-  print("new message received for creating -[:LIKE]-> between chef and recipe node")
+def chef_vote_recipe(messages):
 
   for message in messages:
-    message_chef_username = message.value['liker_username']
-    message_chef_first_name = message.value['liker_first_name']
-    message_chef_last_name  = message.value['liker_last_name']
-    message_chef_preferences = message.value['liker_preferences']
+    message_chef_username = message.value['voter_username']
+    message_chef_first_name = message.value['voter_first_name']
+    message_chef_last_name  = message.value['voter_last_name']
+    message_chef_preferences = message.value['voter_preferences']
+    message_vote_type = message.value['vote_type']
     message_recipe_title = message.value['recipe_title']
     message_recipe_published = message.value['recipe_published']
 
@@ -156,12 +154,23 @@ def chef_like_recipe(messages):
     recipe = Recipe.nodes.get(title=message_recipe_title, published_date=message_recipe_published)
       
 
-    print("processing -[:LIKE]-> relationship")
+    if message_vote_type == "UP_VOTED":
+      print("processing -[:UP_VOTED]-> relationship")
+      if chef.up_voted.is_connected(recipe):
+        pass
+      else:
+        chef.up_voted.connect(recipe)
+    elif message_vote_type == "DOWN_VOTED":
+      print("processing -[:DOWN_VOTED]-> relationship")
+      if chef.down_voted.is_connected(recipe):
+        pass
+      else:
+        chef.down_voted.connect(recipe)
 
-    if chef.liked.is_connected(recipe):
-      pass
-    else:
-      chef.liked.connect(recipe)
+    # if chef.liked.is_connected(recipe):
+    #   pass
+    # else:
+    #   chef.liked.connect(recipe)
     #* on the neo4j workspace the date attribute of the LIKE relationship is not giving data properly.
     #* to see the date, try:
     #* rel = chef.liked.connect(recipe)
@@ -170,23 +179,6 @@ def chef_like_recipe(messages):
   print("process complete")
 
 
-def delete_chef_like_rel(messages):
-  print("new message received for deleting -[:LIKE]-> between chef and recipe node")
-
-  for message in messages:
-    message_chef_username = message.value['liker_username']
-    message_chef_first_name = message.value['liker_first_name']
-    message_chef_last_name  = message.value['liker_last_name']
-    message_recipe_title = message.value['recipe_title']
-    message_recipe_published = message.value['recipe_published']
-
-    query = " MATCH (:Chef{username: $message_chef_username, first_name: $message_chef_first_name, last_name: $message_chef_last_name})-[l: LIKED]->(:Recipe{title: $message_recipe_title, published_date: $message_recipe_published}) DELETE l "
-
-    
-    result, meta = db.cypher_query(query=query, params={ "message_chef_username": message_chef_username, "message_chef_first_name": message_chef_first_name, "message_chef_last_name": message_chef_last_name,"message_recipe_title": message_recipe_title, "message_recipe_published": message_recipe_published })
-    print("LIKE relationship deleted")
-    return result
-  
 
 def update_chef_node_username(messages):
   for message in messages:
