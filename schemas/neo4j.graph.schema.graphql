@@ -1,0 +1,98 @@
+type Tag {
+  name: String
+}
+
+type Chef{
+  username: String
+  first_name: String
+  last_name: String
+}
+
+input ChefInput {
+  username: String
+  first_name: String
+  last_name: String
+}
+
+type Ingredient{
+  name: String
+  quantity: Int
+  unit: String
+}
+
+input IngredientsInput{
+  name: String!
+  quantity: Int!
+  unit: String # a schema of INGREDIENT_MEASUREMENT_UNITS for this property as in the Recipes Service is not needed 
+}
+
+type NutritionalValue{
+  calories: String  # using String type because of the units attached to the numbers
+  fat: String
+  cholesterol: String
+  sodium: String
+  carbohydrates: String
+  fiber: String
+  sugar: String
+  protein: String
+  potassium: String
+}
+
+input NutritionalValueInput{
+  calories: String  # using String type because of the units attached to the numbers
+  fat: String
+  cholesterol: String
+  sodium: String
+  carbohydrates: String
+  fiber: String
+  sugar: String
+  protein: String
+  potassium: String
+}
+
+type Recipe{
+  id: Int
+  title: String
+  description: String
+  ingredients: [Ingredient]
+  instructions: [String]
+  preparationTime: String
+  cookingTime: String
+  servings: Int
+  nutritionalValue: NutritionalValue
+  publishedDate: String
+}
+
+
+type RecipeCutOut{
+  recipe_title: String
+  recipe_published_date: String
+}
+
+input RecipeInput{
+  title: String!
+  description: String!
+  ingredients: [IngredientsInput!]!
+  instructions: [String!]!
+  preparation_time: String!
+  cooking_time: String!
+  servings: Int!
+  nutritionalValue: NutritionalValueInput
+}
+
+
+type Mutation{
+  createChef(input: ChefInput): Chef
+  createTag(name: String): Tag
+  createRecipe(input: RecipeInput): Recipe
+}
+
+type Query{
+  hello: String
+  userPreferenceVector(username:String): String
+  recipesTagsVector: String
+  cosineSimilarities(username:String): String
+
+  recommendFeedForNewUser: [RecipeCutOut]
+
+}

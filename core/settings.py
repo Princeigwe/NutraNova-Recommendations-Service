@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+from neomodel import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +24,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
+ENVIRONMENT = os.environ.get("ENVIRONMENT", default="production" )
+
+if ENVIRONMENT == 'production':
+    SECURE_BROWSER_XSS_FILTER = True # protect against cross-site scripting attacks
+    X_FRAME_OPTIONS = 'DENY' # to protect against clickjacking attacks
+    SECURE_SSL_REDIRECT = True # make all non HTTPS traffic redirect  to HTTPS
+    SECURE_HSTS_SECONDS = 3600 # [HTTP Strict Transfer Security] the time in seconds the browser should remember that this application is only accessible using HTTPS
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True # to force every subdomain to be accessible over HTTPS only
+    SECURE_HSTS_PRELOAD =  True # to ensure https connection to website, before actually visiting the website
+    SECURE_CONTENT_TYPE_NOSNIFF = True # 
+    SESSION_COOKIE_SECURE = True # to use session cookie only over HTTPS
+    CSRF_COOKIE_SECURE = True # to secure csrf cookie in HTTPS connection
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ## to prevent redirects
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$7vr$w#xe82duo!olcf*wx+1qk8y!bjib^iqt2jlle*fxrsi7_'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'nutranova-ml.onrender.com']
 
 
 # Application definition
@@ -40,11 +59,20 @@ INSTALLED_APPS = [
 
 
     # local apps
+    'recommend_engine.apps.RecommendEngineConfig',
 
 
     # 3rd party apps
     "ariadne_django",
+    "django_neomodel",
 ]
+
+NEO_4J_AURA_DB_USERNAME = os.environ.get('NEO_4J_AURA_DB_USERNAME') # neo4j
+NEO_4J_AURA_DB_PASSWORD = os.environ.get('NEO_4J_AURA_DB_PASSWORD')
+NEO_4J_AURA_DB_CONNECTION_URI = os.environ.get('NEO_4J_AURA_DB_CONNECTION_URI')
+NEO_4J_AURA_DB_HOST = os.environ.get('NEO_4J_AURA_DB_HOST')
+
+config.DATABASE_URL = f'neo4j+s://neo4j:{NEO_4J_AURA_DB_PASSWORD}@{NEO_4J_AURA_DB_HOST}'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,11 +109,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
+
+
+# NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:foobarbaz@localhost:7687')
 
 
 # Password validation
