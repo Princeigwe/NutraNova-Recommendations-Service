@@ -259,17 +259,15 @@ def recipe_to_tag_vector_embedding(recipe):
   tags_list = sorted_tags_list()
   print("length of tags list for recipe vector embedding: ", len(tags_list))
   recipe_to_tags_rates = []
-  for name in tags_list:
-    try:
-      tag_node = Tag.nodes.get(name=name)
-      if recipe.is_tagged.is_connected(tag_node):
-        unit = 1
-      else:
-        unit = 0
-      recipe_to_tags_rates.append(unit)
-    except DoesNotExist:
+
+  # fetch all tag nodes the recipe is connected to neo4j database
+  recipe_tags = [tag_node.name for tag_node in recipe.is_tagged.all()]
+  for tag in tags_list:
+    if tag in recipe_tags:
+      unit = 1
+    else:
       unit = 0
-      recipe_to_tags_rates.append(unit)
+    recipe_to_tags_rates.append(unit)
   
   print(f"length of {recipe.title} vector: ", len(recipe_to_tags_rates))
   return recipe_to_tags_rates
