@@ -113,9 +113,11 @@
   "Balanced": {
     "HEALTH_GOALS_CHOICES": "OVERALL_WELLNESS"
   },
+  "Mobility": {
+    "HEALTH_GOALS_CHOICES": "JOINT_HEALTH"
+  }, 
   "Vitamin-Rich": {
-    "TASTE_PREFERENCES_CHOICES": ["CITRUSY", "SOUR"],
-    "HEALTH_GOALS_CHOICES": ["OVERALL_WELLNESS"]
+    "TASTE_PREFERENCES_CHOICES": ["CITRUSY", "SOUR"]
   },
   "Post-Workout": {
     "HEALTH_GOALS_CHOICES": ["MUSCLE_GAIN", "RECOVERY"]
@@ -138,14 +140,26 @@
   "Metabolism-Boosting": {
     "HEALTH_GOALS_CHOICES": "WEIGHT_LOSS"
   },
-  "Bone Health": {
+  "Bone-Health": {
     "MEDICAL_CONDITIONS_CHOICES": "OSTEOPOROSIS"
+  },
+  "Lactose-Intolerance": {
+    "MEDICAL_CONDITIONS_CHOICES": "LACTOSE_INTOLERANCE"
+  },
+  "Fructose-Intolerance": {
+    "MEDICAL_CONDITIONS_CHOICES": "FRUCTOSE_INTOLERANCE"
   },
   "Anti-Cancer": {
     "HEALTH_GOALS_CHOICES": "OVERALL_WELLNESS"
   },
+  "Immunity": {
+    "HEALTH_GOALS_CHOICES": "IMMUNE_SUPPORT"
+  },
   "Energy-Boosting": {
     "HEALTH_GOALS_CHOICES": ["OVERALL_WELLNESS", "BETTER_SLEEP"]
+  },
+  "Digestive": {
+    "HEALTH_GOALS_CHOICES": ["GUT_HEALTH", "DIGESTIVE_HEALTH"]
   },
   "Weight Management": {
     "HEALTH_GOALS_CHOICES": ["WEIGHT_LOSS", "WEIGHT_MAINTENANCE"]
@@ -164,6 +178,9 @@
   },
   "Sour": {
     "TASTE_PREFERENCES_CHOICES": "SOUR"
+  },
+  "Sweet": {
+    "TASTE_PREFERENCES_CHOICES": "SWEET"
   },
   "Creamy": {
     "TASTE_PREFERENCES_CHOICES": "CREAMY"
