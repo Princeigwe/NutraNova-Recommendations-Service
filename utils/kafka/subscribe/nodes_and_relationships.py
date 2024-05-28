@@ -9,23 +9,6 @@ from recommend_engine.models import Recipe, Chef, Tag
 from utils.recommend_feed import recommend_feed_for_existing_user
 
 
-
-# different topics are needed for different operations on nodes and relationships
-
-# Topics Names:
-
-# CREATE_RECIPE: this topic is responsible for creating new recipe nodes, once a recipe is published from the recipe service.
-# the function handling this topic would also creating new tag nodes representing tags of the recipe published.
-# the function is also responsible for creating new chef nodes when a new recipe is created.
-# the function would also be responsible for creating -[IS_TAGGED]-> relationship between the recipe and tag nodes 
-# the function would also be responsible for creating -[PUBLISHED]-> relationship between the chef and the recipe
-
-# UPDATE_CHEF_USERNAME_TOPIC: this topic is responsible for changing the username attribute of a chef node
-
-# CHEF_LIKE_REL_RECIPE: this topic is responsible for creating the -[LIKED]-> relationship between a chef and a recipe
-
-#todo: replace -[LIKE]-> relationship with -[UPVOTE]-> and -[DOWNVOTE]-> relationships
-
 def consume_kafka_neo_graph_messages():
   consumer_config = {
     'bootstrap_servers': os.environ.get('UPSTASH_KAFKA_ENDPOINT'),
@@ -39,10 +22,11 @@ def consume_kafka_neo_graph_messages():
   # topic = None
   UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC = os.environ.get('UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC')
   UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC')
-  UPSTASH_KAFKA_CHEF_USERNAME_TOPIC = os.environ.get('UPSTASH_KAFKA_CHEF_USERNAME_TOPIC')
   UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC = os.environ.get('UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC')
+  UPSTASH_KAFKA_USER_DATA_UPDATE_TOPIC = os.environ.get('UPSTASH_KAFKA_USER_DATA_UPDATE_TOPIC')
 
-  topics = [ UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC, UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC,  UPSTASH_KAFKA_CHEF_USERNAME_TOPIC, UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC ]
+
+  topics = [ UPSTASH_KAFKA_CREATE_RECIPE_NODE_TOPIC, UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC, UPSTASH_KAFKA_USER_DATA_UPDATE_TOPIC, UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC ]
 
     # adding "api_version" on initialization fixes the issue "kafka.errors.NoBrokersAvailable"
   consumer = KafkaConsumer(
@@ -70,8 +54,8 @@ def consume_kafka_neo_graph_messages():
         chef_vote_recipe(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC:
         recommend_feed_for_existing_user(messages)
-      elif topic_partition.topic == UPSTASH_KAFKA_CHEF_USERNAME_TOPIC:
-        update_chef_node_username(messages)
+      elif topic_partition.topic == UPSTASH_KAFKA_USER_DATA_UPDATE_TOPIC:
+        update_chef_node_data(messages)
 
 
 
@@ -167,27 +151,36 @@ def chef_vote_recipe(messages):
       else:
         chef.down_voted.connect(recipe)
 
-    # if chef.liked.is_connected(recipe):
-    #   pass
-    # else:
-    #   chef.liked.connect(recipe)
-    #* on the neo4j workspace the date attribute of the LIKE relationship is not giving data properly.
+    #* on the neo4j workspace the date attribute of the UP_VOTED or DOWN_VOTED relationship is not giving data properly.
     #* to see the date, try:
-    #* rel = chef.liked.connect(recipe)
+    #* rel = chef.up_voted.connect(recipe)
     #* print(rel.date)
   
   print("process complete")
 
 
-
-def update_chef_node_username(messages):
+def update_chef_node_data(messages):
   for message in messages:
     try:
       print(f"Received message: {message.value}")
-      chef = Chef.nodes.get(username=message.value['old_username'])
-      chef.username = message.value['new_username']
-      chef.save()
-      print(f"{chef.first_name} username is now {chef.username}")
+
+      # checking if 'old_username' key is in kafka message. this handles the operation for just updating the username of the Chef node
+      if 'old_username' in message.value:
+        chef = Chef.nodes.get(username=message.value['old_username'])
+        chef.username = message.value['new_username']
+        chef.save()
+        print(f"{chef.first_name} username is now {chef.username}")
+      
+      # this is a response operation for the 'updateProfile' resolver in the user microservice
+      else:
+        chef = Chef.nodes.get(username=message.value['username'])
+        chef.first_name = message.value['first_name']
+        chef.last_name = message.value['last_name']
+        chef.preferences = message.value['preferences']
+        chef.save()
+        print(f"{chef.username} data updated")
+      
+
     except DoesNotExist:
       pass
     except KeyboardInterrupt:
