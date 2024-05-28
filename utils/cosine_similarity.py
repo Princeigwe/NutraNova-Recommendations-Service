@@ -260,7 +260,7 @@ def recipe_to_tag_vector_embedding(recipe):
   print("length of tags list for recipe vector embedding: ", len(tags_list))
   recipe_to_tags_rates = []
 
-  # fetch all tag nodes the recipe is connected to neo4j database
+  # fetch all tag nodes the recipe is connected to neo4j database and create a list of each tag name
   recipe_tags = [tag_node.name for tag_node in recipe.is_tagged.all()]
   for tag in tags_list:
     if tag in recipe_tags:
