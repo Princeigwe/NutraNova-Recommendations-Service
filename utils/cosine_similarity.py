@@ -99,7 +99,7 @@ universal_tag_list = [
   "Wheat-Free"
   ]
 
-###* the tag_data_choice is/are the choices key in the tags.to.preferences.json
+###* the tag_data_choice is/are the "choices" key in the tags.to.preferences.json
 
 def tag_to_preference_unit(chef_preference, tag_data_choice):
   """ this function calculates the presence rate of the node a chef_preference attribute to the tag_data_choice value """
@@ -152,7 +152,13 @@ def tag_to_preference_unit(chef_preference, tag_data_choice):
     else:
       unit = 0
     return unit
-
+  
+  if( isinstance(chef_preference, list) and isinstance(tag_data_choice_value, str) ): 
+    if tag_data_choice_value in chef_preference:
+      unit = 1
+    else:
+      unit = 0
+    return unit
 
 def sorted_tags_list():
   tags_list = universal_tag_list
@@ -200,7 +206,8 @@ def chef_preference_to_tag_vector_embedding(username):
       elif "ALLERGEN_CHOICES" in tag_data_choice:
         tag_data_choice == "ALLERGEN_CHOICES"
         chef_allergens = chef_preferences["allergens"] ##* chef_preferences["allergens"] is of multi-values
-        chef_allergens_list = chef_allergens.split(",")
+        # chef_allergens_list = chef_allergens.split(",")
+        chef_allergens_list = chef_allergens
         unit = tag_to_preference_unit(chef_allergens_list, tag_data_choice)
         print("unit is: ",unit)
 
@@ -218,7 +225,8 @@ def chef_preference_to_tag_vector_embedding(username):
       elif "CUISINES_CHOICES" in tag_data_choice:
         tag_data_choice == "CUISINES_CHOICES"
         chef_cuisines = chef_preferences["cuisines"] ##* chef_preferences["cuisines"] is of multi-values
-        chef_cuisines_list = chef_cuisines.split(",")
+        # chef_cuisines_list = chef_cuisines.split(",")
+        chef_cuisines_list = chef_cuisines
         unit = tag_to_preference_unit(chef_cuisines_list, tag_data_choice)
         print("unit is: ",unit)
 
@@ -228,7 +236,8 @@ def chef_preference_to_tag_vector_embedding(username):
       elif "MEDICAL_CONDITIONS_CHOICES" in tag_data_choice:
         tag_data_choice == "MEDICAL_CONDITIONS_CHOICES"
         chef_medical_conditions = chef_preferences["medical_conditions"] ##* chef_preferences["medical_conditions"] is of multi-values
-        chef_medical_conditions_list = chef_medical_conditions.split(",")
+        # chef_medical_conditions_list = chef_medical_conditions.split(",")
+        chef_medical_conditions_list = chef_medical_conditions
         unit = tag_to_preference_unit(chef_medical_conditions_list, tag_data_choice)
         print("unit is: ",unit)
 
@@ -238,7 +247,8 @@ def chef_preference_to_tag_vector_embedding(username):
       elif "TASTE_PREFERENCES_CHOICES" in tag_data_choice:
         tag_data_choice == "TASTE_PREFERENCES_CHOICES"
         chef_taste_preferences = chef_preferences["taste_preferences"] ##* chef_preferences["taste_preferences"] is of multi-values
-        chef_taste_preferences_list = chef_taste_preferences.split(",")
+        # chef_taste_preferences_list = chef_taste_preferences.split(",")
+        chef_taste_preferences_list = chef_taste_preferences
         unit = tag_to_preference_unit(chef_taste_preferences_list, tag_data_choice)
         print("unit is: ",unit)
 
