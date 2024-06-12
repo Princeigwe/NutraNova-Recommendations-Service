@@ -182,7 +182,9 @@ def update_chef_node_data(messages):
       
 
     except DoesNotExist:
-      pass
+      # pass
+      chef = Chef(username=message.value['username'] or message.value['new_username'], first_name=message.value['first_name'], last_name=message.value['last_name'], preferences=message.value['preferences']).save()
+
     except KeyboardInterrupt:
       pass
 
