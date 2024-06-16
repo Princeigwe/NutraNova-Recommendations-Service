@@ -174,9 +174,9 @@ def update_chef_node_data(messages):
       # this is a response operation for the 'updateProfile' resolver in the user microservice
       else:
         chef = Chef.nodes.get(username=message.value['username'])
-        chef.first_name = message.value['first_name']
-        chef.last_name = message.value['last_name']
-        chef.preferences = message.value['preferences']
+        chef.first_name = message.value['first_name'] if 'first_name' in message.value else chef.first_name
+        chef.last_name = message.value['last_name'] if 'last_name' in message.value else chef.last_name
+        chef.preferences = message.value['preferences'] if 'preferences' in message.value else chef.preferences
         chef.save()
         print(f"{chef.username} data updated")
       
