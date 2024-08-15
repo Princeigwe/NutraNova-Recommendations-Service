@@ -36,7 +36,9 @@ def consume_kafka_neo_graph_messages():
     security_protocol=consumer_config['security_protocol'],
     sasl_plain_username=consumer_config['sasl_plain_username'],
     sasl_plain_password=consumer_config['sasl_plain_password'],
-    auto_offset_reset=consumer_config['auto.offset.reset'],
+    auto_offset_reset="latest",
+    group_id="recommendation_relation",
+    auto_commit_interval_ms=1000,
     value_deserializer=lambda m: json.loads(m.decode('ascii')),
     api_version=(0, 10, 2)
   )
@@ -182,8 +184,8 @@ def update_chef_node_data(messages):
       
 
     except DoesNotExist:
-      # pass
-      chef = Chef(username=message.value['username'] or message.value['new_username'], first_name=message.value['first_name'], last_name=message.value['last_name'], preferences=message.value['preferences']).save()
+      pass
+      # chef = Chef(username=message.value['username'] if 'username' in message.value else message.value['new_username'], first_name=message.value['first_name'], last_name=message.value['last_name'], preferences=message.value['preferences']).save()
 
     except KeyboardInterrupt:
       pass
