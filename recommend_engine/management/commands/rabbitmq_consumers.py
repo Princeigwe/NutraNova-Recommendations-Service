@@ -2,7 +2,7 @@
 
 from typing import Any
 from django.core.management.base import BaseCommand
-from threads import rabbitmq_consumer_update_chef_thread
+from threads import rabbitmq_consumer_update_chef_thread, rabbitmq_consumer_create_nodes_thread
 
 
 class Command(BaseCommand):
@@ -12,4 +12,8 @@ class Command(BaseCommand):
     # start rabbitmq consumer thread for updating chef data
     update_chef_data_consumer = rabbitmq_consumer_update_chef_thread.UpdateChefThread()
     update_chef_data_consumer.start()
+
+    # start rabbitmq consumer thread for creating nodes on published recipes
+    published_recipe_consumer = rabbitmq_consumer_create_nodes_thread.CreatePublishedRecipeThread()
+    published_recipe_consumer.start()
 
