@@ -54,8 +54,8 @@ def consume_kafka_neo_graph_messages():
         create_nodes(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_CHEF_VOTE_RECIPE_REL_TOPIC:
         chef_vote_recipe(messages)
-      elif topic_partition.topic == UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC:
-        recommend_feed_for_existing_user(messages)
+      # elif topic_partition.topic == UPSTASH_KAFKA_REQUEST_USER_RECOMMENDATIONS_TOPIC:
+      #   recommend_feed_for_existing_user(messages)
       elif topic_partition.topic == UPSTASH_KAFKA_USER_DATA_UPDATE_TOPIC:
         update_chef_node_data(messages)
 
