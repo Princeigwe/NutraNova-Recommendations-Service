@@ -1,5 +1,5 @@
 from threading import Thread
-from utils.rabbitmq.consumers.consume_published_recipe import consume
+# from utils.rabbitmq.consumers.consume_published_recipe import consume
 
 
 class CreatePublishedRecipeThread(Thread):
@@ -9,4 +9,4 @@ class CreatePublishedRecipeThread(Thread):
   
   def run(self):
     print("[RabbitMQ]: 'published recipe' consumer thread running in background")
-    consume()
+    # consume()

@@ -1,6 +1,7 @@
 import os
-from .channels.stream_channel import channel
+from .channels.consuming_channel import channel
 from .consumers.consume_chef_data import consume_and_update_chef_node_data
+from .consumers.consume_published_recipe import create_nodes
 import json
 
 # stream declaration
@@ -8,10 +9,13 @@ stream_name=os.environ.get('RABBITMQ_STREAM')
 channel.queue_declare(queue=stream_name, durable=True, arguments={"x-queue-type": "stream"})
 
 rabbitmq_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
+rabbitmq_message_type1 = os.environ.get('RECIPE_PUBLISHED_MESSAGE_TYPE')
 
 def stream_message(message):
   if message['type'] == rabbitmq_message_type:
     consume_and_update_chef_node_data(message)
+  elif message['type'] == rabbitmq_message_type1:
+    create_nodes(message)
 
 
 def callback(ch, method, properties, body):
