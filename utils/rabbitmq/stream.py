@@ -2,20 +2,24 @@ import os
 from .channels.consuming_channel import channel
 from .consumers.consume_chef_data import consume_and_update_chef_node_data
 from .consumers.consume_published_recipe import create_nodes
+from .consumers.consume_recommendation_feed_request import consume_recommend_feed_request
 import json
 
 # stream declaration
 stream_name=os.environ.get('RABBITMQ_STREAM')
 channel.queue_declare(queue=stream_name, durable=True, arguments={"x-queue-type": "stream"})
 
-rabbitmq_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
-rabbitmq_message_type1 = os.environ.get('RECIPE_PUBLISHED_MESSAGE_TYPE')
+chef_data_update_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
+recipe_published_message_type = os.environ.get('RECIPE_PUBLISHED_MESSAGE_TYPE')
+recommendation_feed_request_message_type = os.environ.get('REQUEST_RECOMMENDED_FEED_MESSAGE_TYPE')
 
 def stream_message(message):
-  if message['type'] == rabbitmq_message_type:
+  if message['type'] == chef_data_update_message_type:
     consume_and_update_chef_node_data(message)
-  elif message['type'] == rabbitmq_message_type1:
+  elif message['type'] == recipe_published_message_type:
     create_nodes(message)
+  elif message['type'] == recommendation_feed_request_message_type:
+    consume_recommend_feed_request(message)
 
 
 def callback(ch, method, properties, body):
