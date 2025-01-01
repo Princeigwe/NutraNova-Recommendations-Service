@@ -5,8 +5,6 @@ import json
 import neomodel
 from neomodel import db, DoesNotExist
 from recommend_engine.models import Chef
-# from utils.rabbitmq.rabbitmq_config import channel
-from utils.rabbitmq.channels.consume_chef_data_channel import channel
 
 rabbitmq_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
 
