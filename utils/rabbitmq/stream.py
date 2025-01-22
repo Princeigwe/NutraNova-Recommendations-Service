@@ -5,12 +5,9 @@ from .consumers.consume_published_recipe import create_nodes
 from .consumers.consume_recommendation_feed_request import consume_recommend_feed_request
 from .consumers.consume_recipe_vote import chef_vote_recipe
 import json
-from django.conf import settings
-from utils.rabbitmq_offset_track import update_offset_node
 
 # stream declaration
 stream_name=os.environ.get('RABBITMQ_STREAM')
-channel.queue_declare(queue=stream_name, durable=True, arguments={"x-queue-type": "stream"})
 
 chef_data_update_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
 recipe_published_message_type = os.environ.get('RECIPE_PUBLISHED_MESSAGE_TYPE')
@@ -43,15 +40,7 @@ def callback(channel, method_frame, header_frame, body):
 
   channel.basic_ack(latest_delivery_tag)
 
-  number_of_ackd_message = number_of_ackd_message + 1
-
-  offset_value = settings.RABBITMQ_OFFSET_VALUE
-  new_offset_value = offset_value + number_of_ackd_message
-
-  update_offset_node(new_offset_value)
-
-
 def consume():
   channel.basic_qos(prefetch_count=100) # setting the maximum number of in-progress mesesages to 100
-  channel.basic_consume(stream_name, callback, arguments={"x-stream-offset": settings.RABBITMQ_OFFSET_VALUE})
+  channel.basic_consume(stream_name, callback, arguments={"x-stream-offset": "first"})
   channel.start_consuming()

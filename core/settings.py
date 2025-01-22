@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from neomodel import config
-from utils.rabbitmq_offset_track import create_offset_node, get_offset_node
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -160,10 +159,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# custom node configuration to keep track of current rabbitmq message delivery tag to be used as an offset
-RABBITMQ_OFFSET_NODE = create_offset_node()
-RABBITMQ_OFFSET_NODE, ALIAS = get_offset_node(1)
-RABBITMQ_OFFSET_NODE_DATA = RABBITMQ_OFFSET_NODE[0][0]._properties
-RABBITMQ_OFFSET_VALUE = RABBITMQ_OFFSET_NODE_DATA.get('message_offset') 
-print("current rabbitmq consumer offset: ", RABBITMQ_OFFSET_VALUE)
