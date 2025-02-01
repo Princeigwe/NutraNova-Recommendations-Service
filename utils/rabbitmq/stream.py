@@ -9,6 +9,13 @@ import json
 # stream declaration
 stream_name=os.environ.get('RABBITMQ_STREAM')
 
+channel.queue_declare(queue=stream_name, durable=True, arguments={
+  "x-queue-type": "stream", 
+  "x-max-age": "1D",
+  "x-max-length-bytes": 5000000, 
+  "x-stream-max-segment-size-bytes":5000
+  }) 
+
 chef_data_update_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
 recipe_published_message_type = os.environ.get('RECIPE_PUBLISHED_MESSAGE_TYPE')
 recommendation_feed_request_message_type = os.environ.get('REQUEST_RECOMMENDED_FEED_MESSAGE_TYPE')
