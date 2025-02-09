@@ -30,8 +30,8 @@ def consume_and_update_chef_node_data(message):
         
 
   except DoesNotExist:
-    pass
-    # chef = Chef(username=message['username'] if 'username' in message else message['new_username'], first_name=message['first_name'], last_name=message['last_name'], preferences=message['preferences']).save()
+    # pass
+    chef = Chef(username=message['username'] if 'username' in message else message['new_username'], first_name=message['first_name'], last_name=message['last_name'], preferences=message['preferences']).save()
 
   except KeyboardInterrupt:
     pass

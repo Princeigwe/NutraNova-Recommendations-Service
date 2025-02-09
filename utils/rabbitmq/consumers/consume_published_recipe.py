@@ -29,8 +29,10 @@ def create_nodes(message):
     
   try:
     chef = Chef.nodes.get(username=message_chef_username)
+  except DoesNotExist:
+    chef = Chef(username=message_chef_username, first_name=message_chef_first_name, last_name=message_chef_last_name, preferences=message_chef_preferences).save()
 
-    recipe = Recipe(
+  recipe = Recipe(
     title             = message_recipe_title, 
     description       = message_recipe_description, 
     ingredients       = message_recipe_ingredients, 
@@ -41,22 +43,21 @@ def create_nodes(message):
     nutritional_value = message_recipe_nutritional_value,
     published_date    = message_published_date
     ).save()
-    chef.published.connect(recipe)
+  chef.published.connect(recipe)
 
-    print("processing and creating published nodes relationships")
+  print("processing and creating published nodes relationships")
 
-    message_tags = message['tags']
-    for tag in message_tags:
-      try:
-        tag = Tag.nodes.get(name=tag)
-      except DoesNotExist:
-        tag = Tag(name=tag).save()
-      
-      recipe.is_tagged.connect(tag)
+  message_tags = message['tags']
+  for tag in message_tags:
+    try:
+      tag = Tag.nodes.get(name=tag)
+    except DoesNotExist:
+      tag = Tag(name=tag).save()
+    
+    recipe.is_tagged.connect(tag)
 
-    print("process complete")
-  except DoesNotExist:
-    pass
+  print("process complete")
+
 
 
   # print("processing and creating published nodes relationships")
