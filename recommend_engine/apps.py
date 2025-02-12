@@ -11,6 +11,5 @@ class RecommendEngineConfig(AppConfig):
     def ready(self) -> None:
         if os.environ.get('RUN_MAIN'):
             print("hello server")
-            # call_command('kafka_consumer')
             call_command('rabbitmq_consumers')
             self.function_executed = True

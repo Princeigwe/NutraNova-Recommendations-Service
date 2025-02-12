@@ -12,7 +12,7 @@ def consume_and_update_chef_node_data(message):
   try:
     print(f"Received message: {message}")
 
-    # checking if 'old_username' key is in kafka message. this handles the operation for just updating the username of the Chef node
+    # checking if 'old_username' key is in RabbitMQ message. this handles the operation for just updating the username of the Chef node
     if 'old_username' in message:
       chef = Chef.nodes.get(username=message['old_username'])
       chef.username = message['new_username']
