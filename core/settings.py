@@ -44,7 +44,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'nutranova-ml.onrender.com']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'nutranova-ml.onrender.com', 'recommendations-service'] # recommendations-service refers to the docker container in the compose file
 
 
 # Application definition
@@ -72,7 +72,10 @@ NEO_4J_AURA_DB_PASSWORD = os.environ.get('NEO_4J_AURA_DB_PASSWORD')
 NEO_4J_AURA_DB_CONNECTION_URI = os.environ.get('NEO_4J_AURA_DB_CONNECTION_URI')
 NEO_4J_AURA_DB_HOST = os.environ.get('NEO_4J_AURA_DB_HOST')
 
-config.DATABASE_URL = f'neo4j+s://neo4j:{NEO_4J_AURA_DB_PASSWORD}@{NEO_4J_AURA_DB_HOST}'
+DEV_NEO_4J_AURA_DB_PASSWORD=os.environ.get('DEV_NEO_4J_AURA_DB_PASSWORD')
+DEV_NEO_4J_AURA_DB_HOST=os.environ.get('DEV_NEO_4J_AURA_DB_HOST')
+
+config.DATABASE_URL = f'neo4j+s://neo4j:{NEO_4J_AURA_DB_PASSWORD}@{NEO_4J_AURA_DB_HOST}' if ENVIRONMENT == 'production' else f'bolt://neo4j:{DEV_NEO_4J_AURA_DB_PASSWORD}@{DEV_NEO_4J_AURA_DB_HOST}'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
