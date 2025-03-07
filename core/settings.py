@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from neomodel import config
+from utils.neomodel_rabbitmq_neo4j_operations import get_custom_rabbitmq_user_message_ids
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -162,3 +163,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+RABBITMQ_USER_MESSAGE_IDS = get_custom_rabbitmq_user_message_ids()
+
