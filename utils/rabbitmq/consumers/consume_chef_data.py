@@ -32,10 +32,8 @@ def consume_and_update_chef_node_data(message):
   ##* if a node with the username does not exist, it means that the user has not had any activity on the recipes service.
   ##* there should to be an activity on the feed feature(such as publishing or voting a recipe) of recipes service for a node to be created in the Neo4j database
   except DoesNotExist:
-    # pass #todo: uncomment this line
-
-    #todo: comment this line
-    chef = Chef(username=message['username'] if 'username' in message else message['new_username'], first_name=message['first_name'], last_name=message['last_name'], preferences=message['preferences']).save()
+    pass
+    # chef = Chef(username=message['username'] if 'username' in message else message['new_username'], first_name=message['first_name'], last_name=message['last_name'], preferences=message['preferences']).save()
 
   except KeyboardInterrupt:
     pass
