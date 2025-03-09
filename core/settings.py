@@ -10,13 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from utils.neomodel_rabbitmq_neo4j_operations import get_custom_rabbitmq_user_message_ids, get_custom_rabbitmq_recipe_message_ids
+from neomodel import config
 from pathlib import Path
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from neomodel import config
-from utils.neomodel_rabbitmq_neo4j_operations import get_custom_rabbitmq_user_message_ids, get_custom_rabbitmq_published_recipe_message_ids
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,19 +25,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-ENVIRONMENT = os.environ.get("ENVIRONMENT", default="production" )
+ENVIRONMENT = os.environ.get("ENVIRONMENT", default="production")
 
 if ENVIRONMENT == 'production':
-    SECURE_BROWSER_XSS_FILTER = True # protect against cross-site scripting attacks
-    X_FRAME_OPTIONS = 'DENY' # to protect against clickjacking attacks
-    SECURE_SSL_REDIRECT = True # make all non HTTPS traffic redirect  to HTTPS
-    SECURE_HSTS_SECONDS = 3600 # [HTTP Strict Transfer Security] the time in seconds the browser should remember that this application is only accessible using HTTPS
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True # to force every subdomain to be accessible over HTTPS only
-    SECURE_HSTS_PRELOAD =  True # to ensure https connection to website, before actually visiting the website
-    SECURE_CONTENT_TYPE_NOSNIFF = True # 
-    SESSION_COOKIE_SECURE = True # to use session cookie only over HTTPS
-    CSRF_COOKIE_SECURE = True # to secure csrf cookie in HTTPS connection
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ## to prevent redirects
+    SECURE_BROWSER_XSS_FILTER = True  # protect against cross-site scripting attacks
+    X_FRAME_OPTIONS = 'DENY'  # to protect against clickjacking attacks
+    SECURE_SSL_REDIRECT = True  # make all non HTTPS traffic redirect  to HTTPS
+    # [HTTP Strict Transfer Security] the time in seconds the browser should remember that this application is only accessible using HTTPS
+    SECURE_HSTS_SECONDS = 3600
+    # to force every subdomain to be accessible over HTTPS only
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # to ensure https connection to website, before actually visiting the website
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SESSION_COOKIE_SECURE = True  # to use session cookie only over HTTPS
+    CSRF_COOKIE_SECURE = True  # to secure csrf cookie in HTTPS connection
+    SECURE_PROXY_SSL_HEADER = (
+        'HTTP_X_FORWARDED_PROTO', 'https')  # to prevent redirects
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -45,7 +49,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'nutranova-ml.onrender.com', 'recommendations-service'] # recommendations-service refers to the docker container in the compose file
+# recommendations-service refers to the docker container in the compose file
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1',
+                 'nutranova-ml.onrender.com', 'recommendations-service']
 
 
 # Application definition
@@ -68,13 +74,13 @@ INSTALLED_APPS = [
     "django_neomodel",
 ]
 
-NEO_4J_AURA_DB_USERNAME = os.environ.get('NEO_4J_AURA_DB_USERNAME') # neo4j
+NEO_4J_AURA_DB_USERNAME = os.environ.get('NEO_4J_AURA_DB_USERNAME')  # neo4j
 NEO_4J_AURA_DB_PASSWORD = os.environ.get('NEO_4J_AURA_DB_PASSWORD')
 NEO_4J_AURA_DB_CONNECTION_URI = os.environ.get('NEO_4J_AURA_DB_CONNECTION_URI')
 NEO_4J_AURA_DB_HOST = os.environ.get('NEO_4J_AURA_DB_HOST')
 
-DEV_NEO_4J_AURA_DB_PASSWORD=os.environ.get('DEV_NEO_4J_AURA_DB_PASSWORD')
-DEV_NEO_4J_AURA_DB_HOST=os.environ.get('DEV_NEO_4J_AURA_DB_HOST')
+DEV_NEO_4J_AURA_DB_PASSWORD = os.environ.get('DEV_NEO_4J_AURA_DB_PASSWORD')
+DEV_NEO_4J_AURA_DB_HOST = os.environ.get('DEV_NEO_4J_AURA_DB_HOST')
 
 config.DATABASE_URL = f'neo4j+s://neo4j:{NEO_4J_AURA_DB_PASSWORD}@{NEO_4J_AURA_DB_HOST}' if ENVIRONMENT == 'production' else f'bolt://neo4j:{DEV_NEO_4J_AURA_DB_PASSWORD}@{DEV_NEO_4J_AURA_DB_HOST}'
 
@@ -164,5 +170,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RABBITMQ_USER_MESSAGE_IDS = get_custom_rabbitmq_user_message_ids()
-RABBITMQ_PUBLISHED_RECIPE_MESSAGE_IDS = get_custom_rabbitmq_published_recipe_message_ids()
-
+RABBITMQ_RECIPE_MESSAGE_IDS = get_custom_rabbitmq_recipe_message_ids()
