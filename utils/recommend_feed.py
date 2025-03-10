@@ -3,6 +3,8 @@ from utils.rabbitmq.publishers.send_user_recommended_feed import send_user_recom
 from recommend_engine.models import Chef
 from neomodel import DoesNotExist
 import os
+from utils.custom_rabbitmq_message_id import custom_rabbitmq_recommendation_message_id
+import datetime
 
 
 def recommend_feed_for_existing_user(message):
@@ -22,6 +24,8 @@ def recommend_feed_for_existing_user(message):
 
   # publish processed recommended feed to rabbitmq
   user_recommended_feed = {
+    "message_id": custom_rabbitmq_recommendation_message_id(),
+    "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     "type": rabbitmq_message_type,
     "username": message['username'],
     "recommended_feed": recommended_feed

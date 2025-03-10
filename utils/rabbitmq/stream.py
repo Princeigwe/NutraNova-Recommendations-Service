@@ -43,7 +43,13 @@ def stream_message(message):
       print("Message already consumed")
 
   elif message['type'] == recommendation_feed_request_message_type:
-    consume_recommend_feed_request(message)
+    if message['message_id'] not in settings.RABBITMQ_RECIPE_MESSAGE_IDS:
+      print("Consuming recommendation feed request rabbitmq message...")
+      consume_recommend_feed_request(message)
+      add_consumed_rabbitmq_recipe_message_id(message['message_id'], message['created_at'])
+    else:
+      print("Message already consumed")
+    # consume_recommend_feed_request(message)
 
   elif message['type'] == vote_recipe_message_type:
     if message['message_id'] not in settings.RABBITMQ_RECIPE_MESSAGE_IDS:
