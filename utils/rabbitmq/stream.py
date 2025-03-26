@@ -4,6 +4,8 @@ from .consumers.consume_chef_data import consume_and_update_chef_node_data
 from .consumers.consume_published_recipe import create_nodes
 from .consumers.consume_recommendation_feed_request import consume_recommend_feed_request
 from .consumers.consume_recipe_vote import chef_vote_recipe
+from django.conf import settings
+from utils.neomodel_rabbitmq_neo4j_operations import add_consumed_rabbitmq_user_message_id, add_consumed_rabbitmq_recipe_message_id
 import json
 
 # stream declaration
@@ -23,13 +25,40 @@ vote_recipe_message_type = os.environ.get('VOTE_RECIPE_MESSAGE_TYPE')
 
 def stream_message(message):
   if message['type'] == chef_data_update_message_type:
-    consume_and_update_chef_node_data(message)
+    consumed_rabbitmq_user_data_message_ids = settings.RABBITMQ_USER_MESSAGE_IDS
+    if message['message_id'] not in consumed_rabbitmq_user_data_message_ids:
+      print("Consuming user data rabbitmq message...")
+      consume_and_update_chef_node_data(message)
+      add_consumed_rabbitmq_user_message_id(message['message_id'], message['created_at']) # insert the consumed message id in the custom rabbitmq user message id node
+    else:
+      print("Message already consumed")
+
   elif message['type'] == recipe_published_message_type:
-    create_nodes(message)
+    consumed_rabbitmq_recipe_message_ids = settings.RABBITMQ_RECIPE_MESSAGE_IDS
+    if message['message_id'] not in consumed_rabbitmq_recipe_message_ids:
+      print("Consuming published recipe rabbitmq message...")
+      create_nodes(message)
+      add_consumed_rabbitmq_recipe_message_id(message['message_id'], message['created_at'])
+    else:
+      print("Message already consumed")
+
   elif message['type'] == recommendation_feed_request_message_type:
-    consume_recommend_feed_request(message)
+    if message['message_id'] not in settings.RABBITMQ_RECIPE_MESSAGE_IDS:
+      print("Consuming recommendation feed request rabbitmq message...")
+      consume_recommend_feed_request(message)
+      add_consumed_rabbitmq_recipe_message_id(message['message_id'], message['created_at'])
+    else:
+      print("Message already consumed")
+    # consume_recommend_feed_request(message)
+
   elif message['type'] == vote_recipe_message_type:
-    chef_vote_recipe(message)
+    if message['message_id'] not in settings.RABBITMQ_RECIPE_MESSAGE_IDS:
+      print("Consuming recipe vote rabbitmq message...")
+      chef_vote_recipe(message)
+      add_consumed_rabbitmq_recipe_message_id(message['message_id'], message['created_at'])
+    else:
+      print("Message already consumed")
+
 
 
 # def callback(ch, method, properties, body):
