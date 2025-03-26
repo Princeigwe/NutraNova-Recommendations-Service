@@ -169,5 +169,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 RABBITMQ_USER_MESSAGE_IDS = get_custom_rabbitmq_user_message_ids()
 RABBITMQ_RECIPE_MESSAGE_IDS = get_custom_rabbitmq_recipe_message_ids()
+
